@@ -33,9 +33,12 @@ export type PictureKind =
   | 'orangeJuice'
   | 'grapeJuice'
   | 'strawberryJuice'
-  | 'lemonJuice';
+  | 'lemonJuice'
+  | 'ball'
+  | 'mango'
+  | 'pencil';
 export type ShapeKind = 'circle' | 'triangle' | 'square' | 'diamond' | 'star';
-export type LeftStyle = 'circle' | 'word' | 'picture' | 'square';
+export type LeftStyle = 'circle' | 'word' | 'picture' | 'square' | 'number';
 export type RightStyle = 'picture' | 'shape';
 
 export interface MatchPair {
@@ -47,6 +50,7 @@ export interface MatchPair {
   leftPicture?: PictureKind;
   leftName?: string;
   shape?: ShapeKind;
+  quantity?: number;
 }
 
 export interface LevelDef {
@@ -192,6 +196,54 @@ export const LEVEL_SEVEN: readonly MatchPair[] = [
   },
 ];
 
+export const LEVEL_EIGHT: readonly MatchPair[] = [
+  {
+    id: 'one-apple',
+    color: 0xe53935,
+    colorName: 'One',
+    leftName: '1',
+    rightName: '1 apple',
+    picture: 'apple',
+    quantity: 1,
+  },
+  {
+    id: 'two-pencils',
+    color: 0x1e88e5,
+    colorName: 'Two',
+    leftName: '2',
+    rightName: '2 pencils',
+    picture: 'pencil',
+    quantity: 2,
+  },
+  {
+    id: 'three-mangoes',
+    color: 0x43a047,
+    colorName: 'Three',
+    leftName: '3',
+    rightName: '3 mangoes',
+    picture: 'mango',
+    quantity: 3,
+  },
+  {
+    id: 'four-flowers',
+    color: 0xfb8c00,
+    colorName: 'Four',
+    leftName: '4',
+    rightName: '4 flowers',
+    picture: 'flower',
+    quantity: 4,
+  },
+  {
+    id: 'five-balls',
+    color: 0x8e24aa,
+    colorName: 'Five',
+    leftName: '5',
+    rightName: '5 balls',
+    picture: 'ball',
+    quantity: 5,
+  },
+];
+
 export const LEVEL_TWO: readonly MatchPair[] = [
   { id: 'red', color: 0xd32f2f, colorName: 'Red', rightName: 'Circle', shape: 'circle' },
   { id: 'blue', color: 0x1565c0, colorName: 'Blue', rightName: 'Triangle', shape: 'triangle' },
@@ -290,6 +342,21 @@ const LEVEL_SEVEN_DEF: LevelDef = {
   pairs: LEVEL_SEVEN,
 };
 
+const LEVEL_EIGHT_DEF: LevelDef = {
+  number: 8,
+  built: true,
+  hint: 'Match each colorful number to the group with the same number of items.',
+  leftHeading: 'Numbers',
+  rightHeading: 'Item groups',
+  leftStyle: 'number',
+  rightStyle: 'picture',
+  startHint: 'Start from a number.',
+  tapHint: 'Now tap the group with that many items.',
+  missHint: 'Not a match. Count the items carefully.',
+  glowHint: 'See the glowing group? Count its items.',
+  pairs: LEVEL_EIGHT,
+};
+
 const LEVEL_TWO_DEF: LevelDef = {
   number: 2,
   built: true,
@@ -313,7 +380,7 @@ export const PATH_LEVELS: readonly LevelDef[] = [
   LEVEL_FIVE_DEF,
   LEVEL_SIX_DEF,
   LEVEL_SEVEN_DEF,
-  futureLevel(8),
+  LEVEL_EIGHT_DEF,
 ];
 
 export const BUILT_LEVEL_COUNT = PATH_LEVELS.filter((level) => level.built).length;

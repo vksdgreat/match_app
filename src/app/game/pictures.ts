@@ -3,6 +3,7 @@ import type Phaser from 'phaser';
 import { paintAnimalFamilies } from './animal-families';
 import { paintAnimals } from './animals';
 import { paintBirds } from './birds';
+import { paintCountedItems } from './counted-items';
 import { paintJuices } from './juices';
 import { LEVEL_ONE, LEVEL_SEVEN, type PictureKind } from './pairs';
 import { paintVehicles } from './vehicles';
@@ -46,6 +47,10 @@ export function createPictureTextures(scene: Phaser.Scene): void {
 
   if (!scene.textures.exists(textureKey('bicycle'))) {
     paintVehicles((picture, paint) => drawTexture(scene, picture, paint));
+  }
+
+  if (!scene.textures.exists(textureKey('ball'))) {
+    paintCountedItems((picture, paint) => drawTexture(scene, picture, paint));
   }
 }
 

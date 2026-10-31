@@ -52,3 +52,16 @@ test('opens level 6 with colored squares matched to vehicles', async ({ page }) 
   await expect(page.getByText('Match each colored square to a vehicle of the same color.')).toBeVisible();
   await expect(page.getByText('Matched 0 of 5')).toBeVisible();
 });
+
+test('opens level 8 with colorful numbers matched to counted item groups', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('match-app-cleared', JSON.stringify({ cleared: [1, 2, 3, 4, 5, 6, 7] }));
+  });
+  await page.goto('/');
+
+  await expect(page.getByText('Level 8 selected')).toBeVisible();
+  await page.getByRole('button', { name: 'Play level 8' }).click();
+  await expect(page.locator('ion-title')).toContainText('Level 8');
+  await expect(page.getByText('Match each colorful number to the group with the same number of items.')).toBeVisible();
+  await expect(page.getByText('Matched 0 of 5')).toBeVisible();
+});
