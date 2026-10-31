@@ -1,4 +1,5 @@
 import {
+  LEVEL_EIGHT,
   LEVEL_FIVE,
   LEVEL_FOUR,
   LEVEL_ONE,
@@ -92,6 +93,21 @@ describe('match pairs', () => {
     expect(new Set(LEVEL_SEVEN.map((pair) => pair.id)).size).toBe(LEVEL_SEVEN.length);
     expect(new Set(LEVEL_SEVEN.map((pair) => pair.leftPicture)).size).toBe(LEVEL_SEVEN.length);
     expect(new Set(LEVEL_SEVEN.map((pair) => pair.picture)).size).toBe(LEVEL_SEVEN.length);
+  });
+
+  it('gives level 8 colorful numbers and matching counted item groups', () => {
+    expect(LEVEL_EIGHT.map((pair) => pair.leftName)).toEqual(['1', '2', '3', '4', '5']);
+    expect(LEVEL_EIGHT.map((pair) => pair.quantity)).toEqual([1, 2, 3, 4, 5]);
+    expect(LEVEL_EIGHT.map((pair) => pair.rightName)).toEqual([
+      '1 apple',
+      '2 pencils',
+      '3 mangoes',
+      '4 flowers',
+      '5 balls',
+    ]);
+    expect(new Set(LEVEL_EIGHT.map((pair) => pair.color)).size).toBe(LEVEL_EIGHT.length);
+    expect(new Set(LEVEL_EIGHT.map((pair) => pair.picture)).size).toBe(LEVEL_EIGHT.length);
+    expect(new Set(LEVEL_EIGHT.map((pair) => pair.id)).size).toBe(LEVEL_EIGHT.length);
   });
 
   it('deals both sides in different orders', () => {

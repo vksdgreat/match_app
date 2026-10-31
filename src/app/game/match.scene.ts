@@ -293,7 +293,10 @@ export class MatchScene extends Phaser.Scene {
     if (!complete) {
       this.hooks.onFeedback({
         tone: 'good',
-        text: `${left.pair.leftName ?? left.pair.colorName} matches the ${left.pair.rightName.toLowerCase()}!`,
+        text:
+          this.level.leftStyle === 'number'
+            ? `Great counting! ${right.pair.rightName}!`
+            : `${left.pair.leftName ?? left.pair.colorName} matches the ${left.pair.rightName.toLowerCase()}!`,
       });
     }
   }
@@ -313,7 +316,9 @@ export class MatchScene extends Phaser.Scene {
   private paintNode(node: MatchNode, metrics: BoardMetrics): void {
     const { container } = node;
     container.removeAll(true);
-    if (node.side === 'left' && this.level.leftStyle === 'word') {
+    if (node.side === 'left' && this.level.leftStyle === 'number') {
+      this.paintNumber(container, node, metrics);
+    } else if (node.side === 'left' && this.level.leftStyle === 'word') {
       this.paintWord(container, node, metrics);
     } else if (node.side === 'left' && this.level.leftStyle === 'square') {
       node.radius = metrics.circleRadius;
@@ -339,6 +344,8 @@ export class MatchScene extends Phaser.Scene {
       container.add(this.drawCard(node, metrics));
       if (this.level.rightStyle === 'shape') {
         container.add(this.drawShape(node, metrics.cardSize));
+      } else if (node.pair.quantity !== undefined && node.pair.picture) {
+        container.add(this.makeCountedPictures(node, metrics));
       } else {
         container.add(this.makePicture(node, metrics.cardSize));
       }
@@ -358,6 +365,24 @@ export class MatchScene extends Phaser.Scene {
     if (container.input) {
       container.input.cursor = 'pointer';
     }
+  }
+
+  private paintNumber(container: Phaser.GameObjects.Container, node: MatchNode, metrics: BoardMetrics): void {
+    node.radius = metrics.circleRadius;
+    node.halfWidth = metrics.circleRadius + NUB_OFFSET;
+    container.add(
+      this.add
+        .text(0, -2, node.pair.leftName ?? String(node.pair.quantity), {
+          fontFamily: FONT,
+          fontSize: `${Math.round(metrics.circleRadius * 1.65)}px`,
+          color: hexColor(node.pair.color),
+          fontStyle: 'bold',
+          stroke: '#ffffff',
+          strokeThickness: 3,
+          shadow: { color: '#5d4037', blur: 3, fill: true, offsetX: 2, offsetY: 2 },
+        })
+        .setOrigin(0.5),
+    );
   }
 
   private paintWord(container: Phaser.GameObjects.Container, node: MatchNode, metrics: BoardMetrics): void {
@@ -523,6 +548,28 @@ export class MatchScene extends Phaser.Scene {
     const pictureSize = cardSize * 0.86;
     image.setDisplaySize(pictureSize, pictureSize);
     return image;
+  }
+
+  private makeCountedPictures(node: MatchNode, metrics: BoardMetrics): Phaser.GameObjects.Image[] {
+    const quantity = node.pair.quantity;
+    const picture = node.pair.picture;
+    if (quantity === undefined || !picture) {
+      return [];
+    }
+
+    const columns = quantity === 1 ? 1 : quantity === 2 ? 2 : 3;
+    const rows = Math.ceil(quantity / columns);
+    const itemSize = metrics.cardSize / (columns === 1 ? 1.45 : columns === 2 ? 2.2 : 3.2);
+    const gap = itemSize * 0.08;
+
+    return Array.from({ length: quantity }, (_, index) => {
+      const column = index % columns;
+      const row = Math.floor(index / columns);
+      const rowCount = Math.min(columns, quantity - row * columns);
+      const x = (column - (rowCount - 1) / 2) * (itemSize + gap);
+      const y = (row - (rows - 1) / 2) * (itemSize + gap) - 2;
+      return this.add.image(x, y, textureKey(picture)).setDisplaySize(itemSize, itemSize);
+    });
   }
 
   private makeLabel(text: string, y: number, fontSize: number): Phaser.GameObjects.Text {
