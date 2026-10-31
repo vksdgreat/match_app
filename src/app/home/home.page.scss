@@ -147,6 +147,19 @@ ion-content {
   font-weight: 700;
 }
 
+.win-stars {
+  text-align: center;
+  font-size: 2.5rem;
+}
+
+.win-star {
+  color: #d7ccc8;
+}
+
+.win-star.earned {
+  color: #ffb300;
+}
+
 .win-actions {
   display: flex;
   flex-direction: column;

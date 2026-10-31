@@ -21,9 +21,14 @@ export type PictureKind =
   | 'foal'
   | 'chicken'
   | 'cow'
-  | 'horse';
+  | 'horse'
+  | 'bicycle'
+  | 'car'
+  | 'motorbike'
+  | 'plane'
+  | 'bus';
 export type ShapeKind = 'circle' | 'triangle' | 'square' | 'diamond' | 'star';
-export type LeftStyle = 'circle' | 'word' | 'picture';
+export type LeftStyle = 'circle' | 'word' | 'picture' | 'square';
 export type RightStyle = 'picture' | 'shape';
 
 export interface MatchPair {
@@ -124,6 +129,14 @@ export const LEVEL_FIVE: readonly MatchPair[] = [
   },
 ];
 
+export const LEVEL_SIX: readonly MatchPair[] = [
+  { id: 'bicycle', color: 0xe53935, colorName: 'Red', rightName: 'Bicycle', picture: 'bicycle' },
+  { id: 'car', color: 0x1e88e5, colorName: 'Blue', rightName: 'Car', picture: 'car' },
+  { id: 'motorbike', color: 0x43a047, colorName: 'Green', rightName: 'Motorbike', picture: 'motorbike' },
+  { id: 'plane', color: 0xfbc02d, colorName: 'Yellow', rightName: 'Plane', picture: 'plane' },
+  { id: 'bus', color: 0x8e24aa, colorName: 'Purple', rightName: 'Bus', picture: 'bus' },
+];
+
 export const LEVEL_TWO: readonly MatchPair[] = [
   { id: 'red', color: 0xd32f2f, colorName: 'Red', rightName: 'Circle', shape: 'circle' },
   { id: 'blue', color: 0x1565c0, colorName: 'Blue', rightName: 'Triangle', shape: 'triangle' },
@@ -192,6 +205,21 @@ const LEVEL_FIVE_DEF: LevelDef = {
   pairs: LEVEL_FIVE,
 };
 
+const LEVEL_SIX_DEF: LevelDef = {
+  number: 6,
+  built: true,
+  hint: 'Match each colored square to a vehicle of the same color.',
+  leftHeading: 'Colors',
+  rightHeading: 'Vehicles',
+  leftStyle: 'square',
+  rightStyle: 'picture',
+  startHint: 'Start from a colored square.',
+  tapHint: 'Now tap the vehicle in the same color.',
+  missHint: 'Not a match. Look for a vehicle in the same color.',
+  glowHint: 'See the glowing vehicle? It matches this color.',
+  pairs: LEVEL_SIX,
+};
+
 const LEVEL_TWO_DEF: LevelDef = {
   number: 2,
   built: true,
@@ -213,7 +241,8 @@ export const PATH_LEVELS: readonly LevelDef[] = [
   LEVEL_THREE_DEF,
   LEVEL_FOUR_DEF,
   LEVEL_FIVE_DEF,
-  ...[6, 7, 8].map((number) => futureLevel(number)),
+  LEVEL_SIX_DEF,
+  ...[7, 8].map((number) => futureLevel(number)),
 ];
 
 export const BUILT_LEVEL_COUNT = PATH_LEVELS.filter((level) => level.built).length;

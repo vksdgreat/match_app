@@ -27,6 +27,7 @@
     </div>
     } @else {
     <div class="status-bar">
+      <p class="score timer" aria-label="Elapsed time">Time {{ timerText() }}</p>
       <p class="level">Level {{ levelNumber() }}</p>
       <p class="hint">{{ hint() }}</p>
       <p class="score" aria-live="polite">{{ statusText() }}</p>
@@ -46,7 +47,12 @@
       @if (screen() === 'play' && complete()) {
       <div class="win" role="status">
         <p class="win-title">Great job!</p>
-        <p class="win-copy">Every pair found its match.</p>
+        <p class="win-copy">Completed in {{ timerText() }}</p>
+        <div class="win-stars" [attr.aria-label]="starsEarned() + ' out of 3 stars'">
+          @for (star of starIndexes; track star) {
+          <span class="win-star" [class.earned]="star < starsEarned()" aria-hidden="true">★</span>
+          }
+        </div>
         <div class="win-actions">
           <ion-button class="play-button" shape="round" (click)="playAgain()">Play again</ion-button>
           <ion-button class="path-choice" fill="outline" shape="round" (click)="backToPath()">Level path</ion-button>

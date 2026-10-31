@@ -1,4 +1,4 @@
-import { LEVEL_FIVE, LEVEL_FOUR, LEVEL_ONE, LEVEL_THREE, LEVEL_TWO, dealPairs, shuffle } from './pairs';
+import { LEVEL_FIVE, LEVEL_FOUR, LEVEL_ONE, LEVEL_SIX, LEVEL_THREE, LEVEL_TWO, dealPairs, shuffle } from './pairs';
 
 describe('match pairs', () => {
   it('gives every color a different picture', () => {
@@ -53,6 +53,14 @@ describe('match pairs', () => {
     expect(new Set(LEVEL_FIVE.map((pair) => pair.id)).size).toBe(LEVEL_FIVE.length);
     expect(new Set(LEVEL_FIVE.map((pair) => pair.leftPicture)).size).toBe(LEVEL_FIVE.length);
     expect(new Set(LEVEL_FIVE.map((pair) => pair.picture)).size).toBe(LEVEL_FIVE.length);
+  });
+
+  it('gives level 6 a unique vehicle in the matching color for every square', () => {
+    expect(LEVEL_SIX.map((pair) => pair.colorName)).toEqual(['Red', 'Blue', 'Green', 'Yellow', 'Purple']);
+    expect(LEVEL_SIX.map((pair) => pair.picture)).toEqual(['bicycle', 'car', 'motorbike', 'plane', 'bus']);
+    expect(LEVEL_SIX.map((pair) => pair.rightName)).toEqual(['Bicycle', 'Car', 'Motorbike', 'Plane', 'Bus']);
+    expect(new Set(LEVEL_SIX.map((pair) => pair.color)).size).toBe(LEVEL_SIX.length);
+    expect(new Set(LEVEL_SIX.map((pair) => pair.picture)).size).toBe(LEVEL_SIX.length);
   });
 
   it('deals both sides in different orders', () => {
