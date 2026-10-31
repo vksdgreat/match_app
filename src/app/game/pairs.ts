@@ -13,9 +13,17 @@ export type PictureKind =
   | 'bluebird'
   | 'parrot'
   | 'duck'
-  | 'finch';
+  | 'finch'
+  | 'chick'
+  | 'puppy'
+  | 'cub'
+  | 'calf'
+  | 'foal'
+  | 'chicken'
+  | 'cow'
+  | 'horse';
 export type ShapeKind = 'circle' | 'triangle' | 'square' | 'diamond' | 'star';
-export type LeftStyle = 'circle' | 'word';
+export type LeftStyle = 'circle' | 'word' | 'picture';
 export type RightStyle = 'picture' | 'shape';
 
 export interface MatchPair {
@@ -24,6 +32,8 @@ export interface MatchPair {
   colorName: string;
   rightName: string;
   picture?: PictureKind;
+  leftPicture?: PictureKind;
+  leftName?: string;
   shape?: ShapeKind;
 }
 
@@ -64,6 +74,54 @@ export const LEVEL_FOUR: readonly MatchPair[] = [
   { id: 'green', color: 0x43a047, colorName: 'Green', rightName: 'Parrot', picture: 'parrot' },
   { id: 'yellow', color: 0xfbc02d, colorName: 'Yellow', rightName: 'Duck', picture: 'duck' },
   { id: 'purple', color: 0x8e24aa, colorName: 'Purple', rightName: 'Finch', picture: 'finch' },
+];
+
+export const LEVEL_FIVE: readonly MatchPair[] = [
+  {
+    id: 'chicken',
+    color: 0xfbc02d,
+    colorName: 'Chick',
+    leftName: 'Chick',
+    leftPicture: 'chick',
+    rightName: 'Chicken',
+    picture: 'chicken',
+  },
+  {
+    id: 'dog',
+    color: 0x8d6e63,
+    colorName: 'Puppy',
+    leftName: 'Puppy',
+    leftPicture: 'puppy',
+    rightName: 'Dog',
+    picture: 'dog',
+  },
+  {
+    id: 'tiger',
+    color: 0xef6c00,
+    colorName: 'Cub',
+    leftName: 'Cub',
+    leftPicture: 'cub',
+    rightName: 'Tiger',
+    picture: 'tiger',
+  },
+  {
+    id: 'cow',
+    color: 0x78909c,
+    colorName: 'Calf',
+    leftName: 'Calf',
+    leftPicture: 'calf',
+    rightName: 'Cow',
+    picture: 'cow',
+  },
+  {
+    id: 'horse',
+    color: 0x6d4c41,
+    colorName: 'Foal',
+    leftName: 'Foal',
+    leftPicture: 'foal',
+    rightName: 'Horse',
+    picture: 'horse',
+  },
 ];
 
 export const LEVEL_TWO: readonly MatchPair[] = [
@@ -119,6 +177,21 @@ const LEVEL_FOUR_DEF: LevelDef = {
   pairs: LEVEL_FOUR,
 };
 
+const LEVEL_FIVE_DEF: LevelDef = {
+  number: 5,
+  built: true,
+  hint: 'Match each baby animal to its grown-up.',
+  leftHeading: 'Baby animals',
+  rightHeading: 'Grown-up animals',
+  leftStyle: 'picture',
+  rightStyle: 'picture',
+  startHint: 'Start from a baby animal.',
+  tapHint: 'Now tap the grown-up animal that it will become.',
+  missHint: 'Not a match. Look for the baby’s grown-up animal.',
+  glowHint: 'See the glowing grown-up? It matches this baby animal.',
+  pairs: LEVEL_FIVE,
+};
+
 const LEVEL_TWO_DEF: LevelDef = {
   number: 2,
   built: true,
@@ -139,7 +212,8 @@ export const PATH_LEVELS: readonly LevelDef[] = [
   LEVEL_TWO_DEF,
   LEVEL_THREE_DEF,
   LEVEL_FOUR_DEF,
-  ...[5, 6, 7, 8].map((number) => futureLevel(number)),
+  LEVEL_FIVE_DEF,
+  ...[6, 7, 8].map((number) => futureLevel(number)),
 ];
 
 export const BUILT_LEVEL_COUNT = PATH_LEVELS.filter((level) => level.built).length;

@@ -293,7 +293,7 @@ export class MatchScene extends Phaser.Scene {
     if (!complete) {
       this.hooks.onFeedback({
         tone: 'good',
-        text: `${left.pair.colorName} matches the ${left.pair.rightName.toLowerCase()}!`,
+        text: `${left.pair.leftName ?? left.pair.colorName} matches the ${left.pair.rightName.toLowerCase()}!`,
       });
     }
   }
@@ -306,7 +306,7 @@ export class MatchScene extends Phaser.Scene {
       matched,
       total,
       complete,
-      status: complete ? 'Great job! You matched every color.' : `Matched ${matched} of ${total}`,
+      status: complete ? 'Great job! You matched every pair.' : `Matched ${matched} of ${total}`,
     });
   }
 
@@ -315,6 +315,14 @@ export class MatchScene extends Phaser.Scene {
     container.removeAll(true);
     if (node.side === 'left' && this.level.leftStyle === 'word') {
       this.paintWord(container, node, metrics);
+    } else if (node.side === 'left' && this.level.leftStyle === 'picture') {
+      node.radius = metrics.cardSize / 2;
+      node.halfWidth = metrics.cardSize / 2 + NUB_OFFSET;
+      container.add(this.drawCard(node, metrics));
+      container.add(this.makePicture(node, metrics.cardSize, node.pair.leftPicture ?? 'apple'));
+      container.add(
+        this.makeLabel(node.pair.leftName ?? node.pair.colorName, metrics.cardSize / 2 + LABEL_GAP, metrics.labelSize),
+      );
     } else if (node.side === 'left') {
       node.radius = metrics.circleRadius;
       node.halfWidth = metrics.circleRadius + NUB_OFFSET;
@@ -484,10 +492,14 @@ export class MatchScene extends Phaser.Scene {
     return graphics;
   }
 
-  private makePicture(node: MatchNode, cardSize: number): Phaser.GameObjects.Image {
-    const image = this.add.image(0, -2, textureKey(node.pair.picture ?? 'apple'));
-    const picture = cardSize * 0.86;
-    image.setDisplaySize(picture, picture);
+  private makePicture(
+    node: MatchNode,
+    cardSize: number,
+    pictureKind: NonNullable<MatchPair['picture']> = node.pair.picture ?? 'apple',
+  ): Phaser.GameObjects.Image {
+    const image = this.add.image(0, -2, textureKey(pictureKind));
+    const pictureSize = cardSize * 0.86;
+    image.setDisplaySize(pictureSize, pictureSize);
     return image;
   }
 

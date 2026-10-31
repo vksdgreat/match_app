@@ -1,4 +1,4 @@
-import { LEVEL_FOUR, LEVEL_ONE, LEVEL_THREE, LEVEL_TWO, dealPairs, shuffle } from './pairs';
+import { LEVEL_FIVE, LEVEL_FOUR, LEVEL_ONE, LEVEL_THREE, LEVEL_TWO, dealPairs, shuffle } from './pairs';
 
 describe('match pairs', () => {
   it('gives every color a different picture', () => {
@@ -43,6 +43,16 @@ describe('match pairs', () => {
     expect(new Set(LEVEL_FOUR.map((pair) => pair.color)).size).toBe(LEVEL_FOUR.length);
     expect(new Set(birds).size).toBe(LEVEL_FOUR.length);
     expect(LEVEL_FOUR.every((pair) => pair.colorName.length > 0 && pair.rightName.length > 0)).toBe(true);
+  });
+
+  it('gives level 5 a unique baby animal and grown-up animal for every pair', () => {
+    expect(LEVEL_FIVE.map((pair) => pair.leftPicture)).toEqual(['chick', 'puppy', 'cub', 'calf', 'foal']);
+    expect(LEVEL_FIVE.map((pair) => pair.picture)).toEqual(['chicken', 'dog', 'tiger', 'cow', 'horse']);
+    expect(LEVEL_FIVE.map((pair) => pair.leftName)).toEqual(['Chick', 'Puppy', 'Cub', 'Calf', 'Foal']);
+    expect(LEVEL_FIVE.map((pair) => pair.rightName)).toEqual(['Chicken', 'Dog', 'Tiger', 'Cow', 'Horse']);
+    expect(new Set(LEVEL_FIVE.map((pair) => pair.id)).size).toBe(LEVEL_FIVE.length);
+    expect(new Set(LEVEL_FIVE.map((pair) => pair.leftPicture)).size).toBe(LEVEL_FIVE.length);
+    expect(new Set(LEVEL_FIVE.map((pair) => pair.picture)).size).toBe(LEVEL_FIVE.length);
   });
 
   it('deals both sides in different orders', () => {
