@@ -1,5 +1,19 @@
 export type PictureKind =
-  'apple' | 'orange' | 'sunflower' | 'flower' | 'grapes' | 'dog' | 'tiger' | 'cat' | 'elephant' | 'bunny';
+  | 'apple'
+  | 'orange'
+  | 'sunflower'
+  | 'flower'
+  | 'grapes'
+  | 'dog'
+  | 'tiger'
+  | 'cat'
+  | 'elephant'
+  | 'bunny'
+  | 'cardinal'
+  | 'bluebird'
+  | 'parrot'
+  | 'duck'
+  | 'finch';
 export type ShapeKind = 'circle' | 'triangle' | 'square' | 'diamond' | 'star';
 export type LeftStyle = 'circle' | 'word';
 export type RightStyle = 'picture' | 'shape';
@@ -44,6 +58,14 @@ export const LEVEL_THREE: readonly MatchPair[] = [
   { id: 'purple', color: 0x8e24aa, colorName: 'Purple', rightName: 'Bunny', picture: 'bunny' },
 ];
 
+export const LEVEL_FOUR: readonly MatchPair[] = [
+  { id: 'red', color: 0xe53935, colorName: 'Red', rightName: 'Cardinal', picture: 'cardinal' },
+  { id: 'blue', color: 0x1e88e5, colorName: 'Blue', rightName: 'Bluebird', picture: 'bluebird' },
+  { id: 'green', color: 0x43a047, colorName: 'Green', rightName: 'Parrot', picture: 'parrot' },
+  { id: 'yellow', color: 0xfbc02d, colorName: 'Yellow', rightName: 'Duck', picture: 'duck' },
+  { id: 'purple', color: 0x8e24aa, colorName: 'Purple', rightName: 'Finch', picture: 'finch' },
+];
+
 export const LEVEL_TWO: readonly MatchPair[] = [
   { id: 'red', color: 0xd32f2f, colorName: 'Red', rightName: 'Circle', shape: 'circle' },
   { id: 'blue', color: 0x1565c0, colorName: 'Blue', rightName: 'Triangle', shape: 'triangle' },
@@ -82,6 +104,21 @@ const LEVEL_THREE_DEF: LevelDef = {
   pairs: LEVEL_THREE,
 };
 
+const LEVEL_FOUR_DEF: LevelDef = {
+  number: 4,
+  built: true,
+  hint: 'Draw a line from each colored circle to the bird of the same color.',
+  leftHeading: 'Colors',
+  rightHeading: 'Birds',
+  leftStyle: 'circle',
+  rightStyle: 'picture',
+  startHint: 'Start from a colored circle.',
+  tapHint: 'Now tap the bird with the same color.',
+  missHint: 'Not a match. Look for a bird with the same color.',
+  glowHint: 'See the glowing bird? It matches this color.',
+  pairs: LEVEL_FOUR,
+};
+
 const LEVEL_TWO_DEF: LevelDef = {
   number: 2,
   built: true,
@@ -101,7 +138,8 @@ export const PATH_LEVELS: readonly LevelDef[] = [
   LEVEL_ONE_DEF,
   LEVEL_TWO_DEF,
   LEVEL_THREE_DEF,
-  ...[4, 5, 6, 7, 8].map((number) => futureLevel(number)),
+  LEVEL_FOUR_DEF,
+  ...[5, 6, 7, 8].map((number) => futureLevel(number)),
 ];
 
 export const BUILT_LEVEL_COUNT = PATH_LEVELS.filter((level) => level.built).length;

@@ -1,4 +1,4 @@
-import { LEVEL_ONE, LEVEL_THREE, LEVEL_TWO, dealPairs, shuffle } from './pairs';
+import { LEVEL_FOUR, LEVEL_ONE, LEVEL_THREE, LEVEL_TWO, dealPairs, shuffle } from './pairs';
 
 describe('match pairs', () => {
   it('gives every color a different picture', () => {
@@ -33,6 +33,16 @@ describe('match pairs', () => {
     expect(animals).toEqual(['dog', 'tiger', 'cat', 'elephant', 'bunny']);
     expect(new Set(LEVEL_THREE.map((pair) => pair.color)).size).toBe(LEVEL_THREE.length);
     expect(LEVEL_THREE.every((pair) => pair.colorName.length > 0 && pair.rightName.length > 0)).toBe(true);
+  });
+
+  it('gives level 4 a color circle and a different bird for each pair', () => {
+    const birds = LEVEL_FOUR.map((pair) => pair.picture);
+
+    expect(LEVEL_FOUR.map((pair) => pair.colorName)).toEqual(['Red', 'Blue', 'Green', 'Yellow', 'Purple']);
+    expect(birds).toEqual(['cardinal', 'bluebird', 'parrot', 'duck', 'finch']);
+    expect(new Set(LEVEL_FOUR.map((pair) => pair.color)).size).toBe(LEVEL_FOUR.length);
+    expect(new Set(birds).size).toBe(LEVEL_FOUR.length);
+    expect(LEVEL_FOUR.every((pair) => pair.colorName.length > 0 && pair.rightName.length > 0)).toBe(true);
   });
 
   it('deals both sides in different orders', () => {
