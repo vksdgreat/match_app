@@ -1,27 +1,163 @@
-#container {
-  text-align: center;
+:host {
+  font-family: 'Avenir Next', 'Trebuchet MS', 'Segoe UI', sans-serif;
+}
 
+ion-toolbar {
+  --background: #ff8a65;
+  --color: #ffffff;
+}
+
+ion-content {
+  --background: #fff8ef;
+  --color: #5d4037;
+}
+
+.board {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  color: #5d4037;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.status-bar {
+  flex: 0 0 auto;
+  padding: 10px 16px 6px;
+  text-align: center;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
+.level {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ef6c00;
+}
 
-  color: #8c8c8c;
-
+.hint,
+.score,
+.feedback,
+.win-copy {
   margin: 0;
 }
 
-#container a {
-  text-decoration: none;
+.hint {
+  margin-top: 2px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.score {
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ffb74d;
+  border-radius: 50%;
+  background: #ffe0b2;
+}
+
+.dot.on {
+  border-color: #2e7d32;
+  background: #66bb6a;
+}
+
+.feedback {
+  min-height: 1.25rem;
+  margin-top: 4px;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.feedback.good {
+  color: #2e7d32;
+}
+
+.feedback.try {
+  color: #e65100;
+}
+
+.play-button {
+  margin-top: 8px;
+  --background: #66bb6a;
+  --background-activated: #43a047;
+  --background-hover: #43a047;
+  --color: #ffffff;
+  font-weight: 800;
+}
+
+.path-button {
+  --color: #ffffff;
+  font-weight: 800;
+}
+
+.stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.game-host {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.win {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: min(280px, calc(100% - 32px));
+  padding: 16px 16px 12px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.96);
+  border: 4px solid #ffb74d;
+  border-radius: 24px;
+  box-shadow: 0 12px 28px rgba(93, 64, 55, 0.18);
+  transform: translate(-50%, -50%);
+}
+
+.win-title {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #2e7d32;
+}
+
+.win-copy {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.win-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.path-choice {
+  --background: transparent;
+  --border-color: #ef6c00;
+  --border-width: 2px;
+  --color: #ef6c00;
+  font-weight: 800;
 }
