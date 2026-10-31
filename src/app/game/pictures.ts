@@ -1,6 +1,7 @@
 import type Phaser from 'phaser';
 
 import { paintAnimals } from './animals';
+import { paintBirds } from './birds';
 import { LEVEL_ONE, type PictureKind } from './pairs';
 
 const SIZE = 256;
@@ -21,6 +22,10 @@ export function createPictureTextures(scene: Phaser.Scene): void {
 
   if (!scene.textures.exists(textureKey('dog'))) {
     paintAnimals((picture, paint) => drawTexture(scene, picture, paint));
+  }
+
+  if (!scene.textures.exists(textureKey('cardinal'))) {
+    paintBirds((picture, paint) => drawTexture(scene, picture, paint));
   }
 }
 
