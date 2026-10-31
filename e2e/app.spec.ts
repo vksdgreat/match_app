@@ -24,3 +24,16 @@ test('opens level 4 with colored circles matched to birds', async ({ page }) => 
   await expect(page.getByText('Draw a line from each colored circle to the bird of the same color.')).toBeVisible();
   await expect(page.getByText('Matched 0 of 5')).toBeVisible();
 });
+
+test('opens level 5 with baby animals matched to grown-up animals', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('match-app-cleared', JSON.stringify({ cleared: [1, 2, 3, 4] }));
+  });
+  await page.goto('/');
+
+  await expect(page.getByText('Level 5 selected')).toBeVisible();
+  await page.getByRole('button', { name: 'Play level 5' }).click();
+  await expect(page.locator('ion-title')).toContainText('Level 5');
+  await expect(page.getByText('Match each baby animal to its grown-up.')).toBeVisible();
+  await expect(page.getByText('Matched 0 of 5')).toBeVisible();
+});
