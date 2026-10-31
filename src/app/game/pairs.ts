@@ -26,7 +26,14 @@ export type PictureKind =
   | 'car'
   | 'motorbike'
   | 'plane'
-  | 'bus';
+  | 'bus'
+  | 'strawberry'
+  | 'lemon'
+  | 'appleJuice'
+  | 'orangeJuice'
+  | 'grapeJuice'
+  | 'strawberryJuice'
+  | 'lemonJuice';
 export type ShapeKind = 'circle' | 'triangle' | 'square' | 'diamond' | 'star';
 export type LeftStyle = 'circle' | 'word' | 'picture' | 'square';
 export type RightStyle = 'picture' | 'shape';
@@ -137,6 +144,54 @@ export const LEVEL_SIX: readonly MatchPair[] = [
   { id: 'bus', color: 0x8e24aa, colorName: 'Purple', rightName: 'Bus', picture: 'bus' },
 ];
 
+export const LEVEL_SEVEN: readonly MatchPair[] = [
+  {
+    id: 'apple-juice',
+    color: 0xe53935,
+    colorName: 'Apple juice',
+    leftName: 'Apple juice',
+    leftPicture: 'appleJuice',
+    rightName: 'Apple',
+    picture: 'apple',
+  },
+  {
+    id: 'orange-juice',
+    color: 0xfb8c00,
+    colorName: 'Orange juice',
+    leftName: 'Orange juice',
+    leftPicture: 'orangeJuice',
+    rightName: 'Orange',
+    picture: 'orange',
+  },
+  {
+    id: 'grape-juice',
+    color: 0x8e24aa,
+    colorName: 'Grape juice',
+    leftName: 'Grape juice',
+    leftPicture: 'grapeJuice',
+    rightName: 'Grapes',
+    picture: 'grapes',
+  },
+  {
+    id: 'strawberry-juice',
+    color: 0xec407a,
+    colorName: 'Strawberry juice',
+    leftName: 'Strawberry juice',
+    leftPicture: 'strawberryJuice',
+    rightName: 'Strawberry',
+    picture: 'strawberry',
+  },
+  {
+    id: 'lemon-juice',
+    color: 0xfbc02d,
+    colorName: 'Lemon juice',
+    leftName: 'Lemon juice',
+    leftPicture: 'lemonJuice',
+    rightName: 'Lemon',
+    picture: 'lemon',
+  },
+];
+
 export const LEVEL_TWO: readonly MatchPair[] = [
   { id: 'red', color: 0xd32f2f, colorName: 'Red', rightName: 'Circle', shape: 'circle' },
   { id: 'blue', color: 0x1565c0, colorName: 'Blue', rightName: 'Triangle', shape: 'triangle' },
@@ -220,6 +275,21 @@ const LEVEL_SIX_DEF: LevelDef = {
   pairs: LEVEL_SIX,
 };
 
+const LEVEL_SEVEN_DEF: LevelDef = {
+  number: 7,
+  built: true,
+  hint: 'Match each glass of juice to the fruit it comes from.',
+  leftHeading: 'Juices',
+  rightHeading: 'Fruits',
+  leftStyle: 'picture',
+  rightStyle: 'picture',
+  startHint: 'Start from a glass of juice.',
+  tapHint: 'Now tap the fruit that makes this juice.',
+  missHint: 'Not a match. Look for the fruit this juice comes from.',
+  glowHint: 'See the glowing fruit? It makes this juice.',
+  pairs: LEVEL_SEVEN,
+};
+
 const LEVEL_TWO_DEF: LevelDef = {
   number: 2,
   built: true,
@@ -242,7 +312,8 @@ export const PATH_LEVELS: readonly LevelDef[] = [
   LEVEL_FOUR_DEF,
   LEVEL_FIVE_DEF,
   LEVEL_SIX_DEF,
-  ...[7, 8].map((number) => futureLevel(number)),
+  LEVEL_SEVEN_DEF,
+  futureLevel(8),
 ];
 
 export const BUILT_LEVEL_COUNT = PATH_LEVELS.filter((level) => level.built).length;
