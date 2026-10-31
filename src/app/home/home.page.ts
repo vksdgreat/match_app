@@ -4,6 +4,7 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } fr
 
 import type { FeedbackTone, MapInfo, MatchFeedback, MatchProgress, PlayInfo } from '../game/match.types';
 import { describeProgress, loadProgress } from '../game/progress';
+import { formatElapsedTime, starsForElapsedTime } from '../game/timing';
 
 interface RunningGame {
   replay: () => void;
@@ -37,12 +38,18 @@ export class HomePage implements AfterViewInit, OnDestroy {
   readonly feedbackTone = signal<FeedbackTone>('neutral');
   readonly matched = signal(0);
   readonly complete = signal(false);
+  readonly timerText = signal('00:00');
+  readonly starsEarned = signal(0);
+  readonly starIndexes = [0, 1, 2];
   readonly supported = signal(true);
   readonly booted = signal(false);
 
   private handle?: RunningGame;
   private resizeObserver?: ResizeObserver;
   private feedbackTimer = 0;
+  private levelTimer = 0;
+  private timerStartedAt = 0;
+  private elapsedMilliseconds = 0;
   private alive = true;
 
   ngAfterViewInit(): void {
@@ -52,6 +59,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.alive = false;
     window.clearTimeout(this.feedbackTimer);
+    this.stopTimer();
     this.resizeObserver?.disconnect();
     this.handle?.destroy();
     this.handle = undefined;
@@ -64,12 +72,14 @@ export class HomePage implements AfterViewInit, OnDestroy {
   playAgain(): void {
     this.complete.set(false);
     this.feedback.set('');
+    this.startTimer();
     this.handle?.replay();
   }
 
   backToPath(): void {
     this.complete.set(false);
     this.feedback.set('');
+    this.stopTimer();
     this.handle?.showMap();
   }
 
@@ -123,6 +133,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.clearedCount.set(info.clearedCount);
     this.builtCount.set(info.builtCount);
     this.complete.set(false);
+    this.stopTimer();
   }
 
   private showPlay(info: PlayInfo): void {
@@ -137,6 +148,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.complete.set(false);
     this.feedback.set('');
     this.statusText.set(`Matched 0 of ${info.total}`);
+    this.startTimer();
   }
 
   private showProgress(progress: MatchProgress): void {
@@ -147,8 +159,35 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.complete.set(progress.complete);
     this.statusText.set(progress.status);
     if (progress.complete) {
+      this.finishTimer();
+      this.starsEarned.set(starsForElapsedTime(this.elapsedMilliseconds));
       window.clearTimeout(this.feedbackTimer);
       this.feedback.set('');
+    }
+  }
+
+  private startTimer(): void {
+    this.stopTimer();
+    this.elapsedMilliseconds = 0;
+    this.timerStartedAt = Date.now();
+    this.timerText.set(formatElapsedTime(0));
+    this.starsEarned.set(0);
+    this.levelTimer = window.setInterval(() => {
+      this.elapsedMilliseconds = Date.now() - this.timerStartedAt;
+      this.timerText.set(formatElapsedTime(this.elapsedMilliseconds));
+    }, 1000);
+  }
+
+  private finishTimer(): void {
+    this.elapsedMilliseconds = Date.now() - this.timerStartedAt;
+    this.timerText.set(formatElapsedTime(this.elapsedMilliseconds));
+    this.stopTimer();
+  }
+
+  private stopTimer(): void {
+    if (this.levelTimer) {
+      window.clearInterval(this.levelTimer);
+      this.levelTimer = 0;
     }
   }
 

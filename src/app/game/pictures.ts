@@ -4,6 +4,7 @@ import { paintAnimalFamilies } from './animal-families';
 import { paintAnimals } from './animals';
 import { paintBirds } from './birds';
 import { LEVEL_ONE, type PictureKind } from './pairs';
+import { paintVehicles } from './vehicles';
 
 const SIZE = 256;
 
@@ -31,6 +32,10 @@ export function createPictureTextures(scene: Phaser.Scene): void {
 
   if (!scene.textures.exists(textureKey('chick'))) {
     paintAnimalFamilies((picture, paint) => drawTexture(scene, picture, paint));
+  }
+
+  if (!scene.textures.exists(textureKey('bicycle'))) {
+    paintVehicles((picture, paint) => drawTexture(scene, picture, paint));
   }
 }
 

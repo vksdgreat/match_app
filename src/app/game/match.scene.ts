@@ -315,6 +315,11 @@ export class MatchScene extends Phaser.Scene {
     container.removeAll(true);
     if (node.side === 'left' && this.level.leftStyle === 'word') {
       this.paintWord(container, node, metrics);
+    } else if (node.side === 'left' && this.level.leftStyle === 'square') {
+      node.radius = metrics.circleRadius;
+      node.halfWidth = metrics.circleRadius + NUB_OFFSET;
+      container.add(this.drawColorSquare(node, metrics));
+      container.add(this.makeLabel(node.pair.colorName, metrics.circleRadius + LABEL_GAP, metrics.labelSize));
     } else if (node.side === 'left' && this.level.leftStyle === 'picture') {
       node.radius = metrics.cardSize / 2;
       node.halfWidth = metrics.cardSize / 2 + NUB_OFFSET;
@@ -471,6 +476,23 @@ export class MatchScene extends Phaser.Scene {
     graphics.fillCircle(radius + NUB_OFFSET, 0, 8);
     graphics.lineStyle(3, 0xffffff, 1);
     graphics.strokeCircle(radius + NUB_OFFSET, 0, 8);
+    return graphics;
+  }
+
+  private drawColorSquare(node: MatchNode, metrics: BoardMetrics): Phaser.GameObjects.Graphics {
+    const size = metrics.circleRadius * 1.6;
+    const half = size / 2;
+    const graphics = this.add.graphics();
+    graphics.fillStyle(0xffffff, 1);
+    graphics.fillRoundedRect(-half - 4, -half - 4, size + 8, size + 8, size * 0.18);
+    graphics.fillStyle(node.pair.color, 1);
+    graphics.fillRoundedRect(-half, -half, size, size, size * 0.16);
+    graphics.fillStyle(0xffffff, 0.28);
+    graphics.fillRoundedRect(-half * 0.66, -half * 0.66, size * 0.45, size * 0.13, size * 0.07);
+    graphics.fillStyle(node.pair.color, 1);
+    graphics.fillCircle(metrics.circleRadius + NUB_OFFSET, 0, 8);
+    graphics.lineStyle(3, 0xffffff, 1);
+    graphics.strokeCircle(metrics.circleRadius + NUB_OFFSET, 0, 8);
     return graphics;
   }
 

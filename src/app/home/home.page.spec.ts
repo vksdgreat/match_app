@@ -22,6 +22,6 @@ describe('HomePage', () => {
     const text = fixture.nativeElement.textContent as string;
     expect(text).toContain('Level 1 selected');
     expect(text).toContain('Tap a bright level to play it, or press Play.');
-    expect(text).toContain('Cleared 0 of 5');
+    expect(text).toContain('Cleared 0 of 6');
   });
 });
