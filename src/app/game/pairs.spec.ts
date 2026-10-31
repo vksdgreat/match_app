@@ -1,4 +1,14 @@
-import { LEVEL_FIVE, LEVEL_FOUR, LEVEL_ONE, LEVEL_SIX, LEVEL_THREE, LEVEL_TWO, dealPairs, shuffle } from './pairs';
+import {
+  LEVEL_FIVE,
+  LEVEL_FOUR,
+  LEVEL_ONE,
+  LEVEL_SEVEN,
+  LEVEL_SIX,
+  LEVEL_THREE,
+  LEVEL_TWO,
+  dealPairs,
+  shuffle,
+} from './pairs';
 
 describe('match pairs', () => {
   it('gives every color a different picture', () => {
@@ -61,6 +71,27 @@ describe('match pairs', () => {
     expect(LEVEL_SIX.map((pair) => pair.rightName)).toEqual(['Bicycle', 'Car', 'Motorbike', 'Plane', 'Bus']);
     expect(new Set(LEVEL_SIX.map((pair) => pair.color)).size).toBe(LEVEL_SIX.length);
     expect(new Set(LEVEL_SIX.map((pair) => pair.picture)).size).toBe(LEVEL_SIX.length);
+  });
+
+  it('gives level 7 a unique juice glass and matching fruit for every pair', () => {
+    expect(LEVEL_SEVEN.map((pair) => pair.leftPicture)).toEqual([
+      'appleJuice',
+      'orangeJuice',
+      'grapeJuice',
+      'strawberryJuice',
+      'lemonJuice',
+    ]);
+    expect(LEVEL_SEVEN.map((pair) => pair.picture)).toEqual(['apple', 'orange', 'grapes', 'strawberry', 'lemon']);
+    expect(LEVEL_SEVEN.map((pair) => pair.leftName)).toEqual([
+      'Apple juice',
+      'Orange juice',
+      'Grape juice',
+      'Strawberry juice',
+      'Lemon juice',
+    ]);
+    expect(new Set(LEVEL_SEVEN.map((pair) => pair.id)).size).toBe(LEVEL_SEVEN.length);
+    expect(new Set(LEVEL_SEVEN.map((pair) => pair.leftPicture)).size).toBe(LEVEL_SEVEN.length);
+    expect(new Set(LEVEL_SEVEN.map((pair) => pair.picture)).size).toBe(LEVEL_SEVEN.length);
   });
 
   it('deals both sides in different orders', () => {

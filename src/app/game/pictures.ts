@@ -3,7 +3,8 @@ import type Phaser from 'phaser';
 import { paintAnimalFamilies } from './animal-families';
 import { paintAnimals } from './animals';
 import { paintBirds } from './birds';
-import { LEVEL_ONE, type PictureKind } from './pairs';
+import { paintJuices } from './juices';
+import { LEVEL_ONE, LEVEL_SEVEN, type PictureKind } from './pairs';
 import { paintVehicles } from './vehicles';
 
 const SIZE = 256;
@@ -20,6 +21,15 @@ export function createPictureTextures(scene: Phaser.Scene): void {
     drawTexture(scene, 'sunflower', drawSunflower);
     drawTexture(scene, 'flower', drawFlower);
     drawTexture(scene, 'grapes', drawGrapes);
+  }
+
+  if (!scene.textures.exists(textureKey('strawberry'))) {
+    drawTexture(scene, 'strawberry', drawStrawberry);
+    drawTexture(scene, 'lemon', drawLemon);
+  }
+
+  if (!scene.textures.exists(textureKey('appleJuice'))) {
+    paintJuices((picture, paint) => drawTexture(scene, picture, paint));
   }
 
   if (!scene.textures.exists(textureKey('dog'))) {
@@ -44,7 +54,9 @@ export function textureKey(picture: PictureKind): string {
 }
 
 function pairColor(id: string): number {
-  return LEVEL_ONE.find((pair) => pair.id === id)?.color ?? 0xffffff;
+  return (
+    LEVEL_ONE.find((pair) => pair.id === id)?.color ?? LEVEL_SEVEN.find((pair) => pair.id === id)?.color ?? 0xffffff
+  );
 }
 
 function drawTexture(
@@ -175,4 +187,46 @@ function drawGrapes(graphics: Phaser.GameObjects.Graphics): void {
     graphics.fillCircle(x - 8, y - 8, 7);
   }
   face(graphics, 128, 114, 0.55, 0xf3e5f5);
+}
+
+function drawStrawberry(graphics: Phaser.GameObjects.Graphics): void {
+  graphics.fillStyle(0xc62828, 1);
+  graphics.fillCircle(98, 102, 48);
+  graphics.fillCircle(158, 102, 48);
+  graphics.fillTriangle(56, 114, 200, 114, 128, 220);
+  graphics.fillStyle(0xec407a, 1);
+  graphics.fillCircle(100, 100, 42);
+  graphics.fillCircle(156, 100, 42);
+  graphics.fillTriangle(62, 112, 194, 112, 128, 210);
+  graphics.fillStyle(LEAF_DARK, 1);
+  graphics.fillTriangle(126, 62, 78, 42, 102, 88);
+  graphics.fillTriangle(130, 62, 178, 42, 154, 88);
+  graphics.fillTriangle(128, 70, 116, 34, 140, 34);
+  graphics.fillStyle(0xfff59d, 1);
+  for (const [x, y] of [
+    [96, 114],
+    [160, 114],
+    [120, 146],
+    [144, 178],
+    [96, 166],
+  ] as const) {
+    graphics.fillEllipse(x, y, 6, 12);
+  }
+  face(graphics, 128, 136, 0.76);
+}
+
+function drawLemon(graphics: Phaser.GameObjects.Graphics): void {
+  graphics.fillStyle(0xf9a825, 1);
+  graphics.fillEllipse(128, 144, 174, 108);
+  graphics.fillTriangle(38, 144, 82, 105, 82, 183);
+  graphics.fillTriangle(218, 144, 174, 105, 174, 183);
+  graphics.fillStyle(0xfdd835, 1);
+  graphics.fillEllipse(128, 140, 160, 94);
+  graphics.fillTriangle(48, 140, 86, 108, 86, 172);
+  graphics.fillTriangle(208, 140, 170, 108, 170, 172);
+  graphics.fillStyle(LEAF, 1);
+  graphics.fillEllipse(174, 72, 56, 26);
+  graphics.fillStyle(LEAF_DARK, 1);
+  graphics.fillEllipse(170, 68, 28, 10);
+  face(graphics, 128, 142, 0.72);
 }
