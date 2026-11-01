@@ -26,7 +26,7 @@ describe('level progress', () => {
     expect(lockedReason(levelThree)).toBe('Clear level 2 to open level 3.');
     expect(lockedReason(levelByNumber(5))).toBe('Clear level 4 to open level 5.');
     expect(lockedReason(levelByNumber(6))).toBe('Clear level 5 to open level 6.');
-    expect(describeProgress(progress)).toEqual({ readyLevel: 1, clearedCount: 0, builtCount: 8 });
+    expect(describeProgress(progress)).toEqual({ readyLevel: 1, clearedCount: 0, builtCount: 9 });
   });
 
   it('unlocks level 2 after level 1 is cleared and keeps later levels locked', () => {
@@ -39,7 +39,9 @@ describe('level progress', () => {
     expect(readyLevelNumber(progress)).toBe(2);
     expect(levelTwo && isUnlocked(levelTwo, progress)).toBe(true);
     expect(levelThree && isUnlocked(levelThree, progress)).toBe(false);
-    expect(PATH_LEVELS.filter((level) => level.built).map((level) => level.number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(PATH_LEVELS.filter((level) => level.built).map((level) => level.number)).toEqual([
+      1, 2, 3, 4, 5, 6, 7, 8, 9,
+    ]);
   });
 
   it('unlocks each new level after the previous level is cleared', () => {
@@ -52,6 +54,7 @@ describe('level progress', () => {
     const levelSix = levelByNumber(6);
     const levelSeven = levelByNumber(7);
     const levelEight = levelByNumber(8);
+    const levelNine = levelByNumber(9);
 
     expect(readyLevelNumber(progress)).toBe(3);
     expect(levelThree && isUnlocked(levelThree, progress)).toBe(true);
@@ -78,6 +81,11 @@ describe('level progress', () => {
     const afterLevelSeven = loadProgress();
     expect(readyLevelNumber(afterLevelSeven)).toBe(8);
     expect(levelEight && isUnlocked(levelEight, afterLevelSeven)).toBe(true);
+    expect(levelNine && isUnlocked(levelNine, afterLevelSeven)).toBe(false);
+    markCleared(8);
+    const afterLevelEight = loadProgress();
+    expect(readyLevelNumber(afterLevelEight)).toBe(9);
+    expect(levelNine && isUnlocked(levelNine, afterLevelEight)).toBe(true);
   });
 
   it('keeps the last built level selected when every built level is cleared', () => {
@@ -89,11 +97,12 @@ describe('level progress', () => {
     markCleared(6);
     markCleared(7);
     markCleared(8);
-    markCleared(7);
+    markCleared(9);
+    markCleared(9);
 
     const progress = loadProgress();
-    expect(progress.cleared).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
-    expect(readyLevelNumber(progress)).toBe(8);
-    expect(describeProgress(progress).clearedCount).toBe(8);
+    expect(progress.cleared).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    expect(readyLevelNumber(progress)).toBe(9);
+    expect(describeProgress(progress).clearedCount).toBe(9);
   });
 });

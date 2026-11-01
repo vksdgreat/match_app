@@ -37,7 +37,7 @@ export type PictureKind =
   | 'ball'
   | 'mango'
   | 'pencil';
-export type ShapeKind = 'circle' | 'triangle' | 'square' | 'diamond' | 'star';
+export type ShapeKind = 'circle' | 'triangle' | 'square' | 'diamond' | 'star' | 'pentagon' | 'hexagon' | 'octagon';
 export type LeftStyle = 'circle' | 'word' | 'picture' | 'square' | 'number';
 export type RightStyle = 'picture' | 'shape';
 
@@ -244,6 +244,14 @@ export const LEVEL_EIGHT: readonly MatchPair[] = [
   },
 ];
 
+export const LEVEL_NINE: readonly MatchPair[] = [
+  { id: 'three', color: 0xe53935, colorName: 'Three', leftName: '3', rightName: 'Triangle', shape: 'triangle' },
+  { id: 'four', color: 0x1e88e5, colorName: 'Four', leftName: '4', rightName: 'Square', shape: 'square' },
+  { id: 'five', color: 0x43a047, colorName: 'Five', leftName: '5', rightName: 'Pentagon', shape: 'pentagon' },
+  { id: 'six', color: 0xfb8c00, colorName: 'Six', leftName: '6', rightName: 'Hexagon', shape: 'hexagon' },
+  { id: 'eight', color: 0x8e24aa, colorName: 'Eight', leftName: '8', rightName: 'Octagon', shape: 'octagon' },
+];
+
 export const LEVEL_TWO: readonly MatchPair[] = [
   { id: 'red', color: 0xd32f2f, colorName: 'Red', rightName: 'Circle', shape: 'circle' },
   { id: 'blue', color: 0x1565c0, colorName: 'Blue', rightName: 'Triangle', shape: 'triangle' },
@@ -357,6 +365,21 @@ const LEVEL_EIGHT_DEF: LevelDef = {
   pairs: LEVEL_EIGHT,
 };
 
+const LEVEL_NINE_DEF: LevelDef = {
+  number: 9,
+  built: true,
+  hint: 'Draw a line from each number to the polygon with that many sides.',
+  leftHeading: 'Numbers',
+  rightHeading: 'Polygons',
+  leftStyle: 'number',
+  rightStyle: 'shape',
+  startHint: 'Start from a number.',
+  tapHint: 'Now tap the polygon with that many sides.',
+  missHint: 'Not a match. Count the sides of the polygon.',
+  glowHint: 'See the glowing polygon? Count its sides.',
+  pairs: LEVEL_NINE,
+};
+
 const LEVEL_TWO_DEF: LevelDef = {
   number: 2,
   built: true,
@@ -381,6 +404,7 @@ export const PATH_LEVELS: readonly LevelDef[] = [
   LEVEL_SIX_DEF,
   LEVEL_SEVEN_DEF,
   LEVEL_EIGHT_DEF,
+  LEVEL_NINE_DEF,
 ];
 
 export const BUILT_LEVEL_COUNT = PATH_LEVELS.filter((level) => level.built).length;
@@ -419,23 +443,6 @@ export function dealPairs(pairs: readonly MatchPair[]): { left: MatchPair[]; rig
     }
   }
   return { left, right };
-}
-
-function futureLevel(number: number): LevelDef {
-  return {
-    number,
-    built: false,
-    hint: '',
-    leftHeading: '',
-    rightHeading: '',
-    leftStyle: 'circle',
-    rightStyle: 'picture',
-    startHint: '',
-    tapHint: '',
-    missHint: '',
-    glowHint: '',
-    pairs: [],
-  };
 }
 
 function sameOrder(left: readonly MatchPair[], right: readonly MatchPair[]): boolean {
