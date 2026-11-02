@@ -2,19 +2,26 @@
   <ion-toolbar>
     @if (screen() === 'play') {
     <ion-buttons slot="start">
-      <ion-button class="path-button" fill="clear" (click)="backToPath()">Path</ion-button>
+      <ion-button class="home-button" fill="clear" aria-label="Home" (click)="backToPath()">
+        <ion-icon slot="icon-only" [icon]="homeIcon" aria-hidden="true"></ion-icon>
+      </ion-button>
     </ion-buttons>
     }
     <ion-title>{{ screen() === 'map' ? 'Match Game' : 'Level ' + levelNumber() }}</ion-title>
+    @if (screen() === 'play') {
+    <ion-buttons slot="end">
+      <span class="timer" role="timer">{{ timerText() }}</span>
+    </ion-buttons>
+    }
   </ion-toolbar>
 </ion-header>
 
 <ion-content [scrollY]="false">
-  <div class="board">
+  <div class="board" [class.path-screen]="screen() === 'map'">
     @if (screen() === 'map') {
     <div class="status-bar">
       <p class="level">Level {{ readyLevel() }} selected</p>
-      <p class="hint">Tap a bright level to play it, or press Play.</p>
+      <p class="hint">Scroll the path, tap a bright level, or press Play.</p>
       <p class="score">Cleared {{ clearedCount() }} of {{ builtCount() }}</p>
       <p class="feedback" [class.good]="feedbackTone() === 'good'" [class.try]="feedbackTone() === 'try'">
         {{ feedback() }}
@@ -27,8 +34,6 @@
     </div>
     } @else {
     <div class="status-bar">
-      <p class="score timer" aria-label="Elapsed time">Time {{ timerText() }}</p>
-      <p class="level">Level {{ levelNumber() }}</p>
       <p class="hint">{{ hint() }}</p>
       <p class="score" aria-live="polite">{{ statusText() }}</p>
       <div class="dots" aria-hidden="true">
@@ -55,7 +60,9 @@
         </div>
         <div class="win-actions">
           <ion-button class="play-button" shape="round" (click)="playAgain()">Play again</ion-button>
-          <ion-button class="path-choice" fill="outline" shape="round" (click)="backToPath()">Level path</ion-button>
+          @if (hasNextLevel()) {
+          <ion-button class="next-level" fill="outline" shape="round" (click)="playNext()">Next level</ion-button>
+          }
         </div>
       </div>
       }

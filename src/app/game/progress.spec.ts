@@ -26,7 +26,7 @@ describe('level progress', () => {
     expect(lockedReason(levelThree)).toBe('Clear level 2 to open level 3.');
     expect(lockedReason(levelByNumber(5))).toBe('Clear level 4 to open level 5.');
     expect(lockedReason(levelByNumber(6))).toBe('Clear level 5 to open level 6.');
-    expect(describeProgress(progress)).toEqual({ readyLevel: 1, clearedCount: 0, builtCount: 9 });
+    expect(describeProgress(progress)).toEqual({ readyLevel: 1, clearedCount: 0, builtCount: 15 });
   });
 
   it('unlocks level 2 after level 1 is cleared and keeps later levels locked', () => {
@@ -40,7 +40,7 @@ describe('level progress', () => {
     expect(levelTwo && isUnlocked(levelTwo, progress)).toBe(true);
     expect(levelThree && isUnlocked(levelThree, progress)).toBe(false);
     expect(PATH_LEVELS.filter((level) => level.built).map((level) => level.number)).toEqual([
-      1, 2, 3, 4, 5, 6, 7, 8, 9,
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
   });
 
@@ -96,13 +96,31 @@ describe('level progress', () => {
     markCleared(5);
     markCleared(6);
     markCleared(7);
-    markCleared(8);
-    markCleared(9);
-    markCleared(9);
+    for (let level = 8; level <= 15; level += 1) {
+      markCleared(level);
+    }
 
     const progress = loadProgress();
-    expect(progress.cleared).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    expect(readyLevelNumber(progress)).toBe(9);
-    expect(describeProgress(progress).clearedCount).toBe(9);
+    expect(progress.cleared).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+    expect(readyLevelNumber(progress)).toBe(15);
+    expect(describeProgress(progress).clearedCount).toBe(15);
+    const levelFifteen = levelByNumber(15);
+    expect(levelFifteen && isUnlocked(levelFifteen, progress)).toBe(true);
+  });
+
+  it('keeps level 15 locked until level 14 is cleared', () => {
+    for (let level = 1; level <= 13; level += 1) {
+      markCleared(level);
+    }
+    const before = loadProgress();
+    const levelFifteen = levelByNumber(15);
+    expect(readyLevelNumber(before)).toBe(14);
+    expect(levelFifteen && isUnlocked(levelFifteen, before)).toBe(false);
+    expect(lockedReason(levelFifteen)).toBe('Clear level 14 to open level 15.');
+
+    markCleared(14);
+    const after = loadProgress();
+    expect(readyLevelNumber(after)).toBe(15);
+    expect(levelFifteen && isUnlocked(levelFifteen, after)).toBe(true);
   });
 });

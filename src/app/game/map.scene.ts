@@ -14,11 +14,16 @@ interface TrailSample {
   ny: number;
 }
 
+const LEVEL_SPACING = 120;
+
 export class MapScene extends Phaser.Scene {
   private backdrop?: Phaser.GameObjects.Graphics;
   private path?: Phaser.GameObjects.Graphics;
   private nodes: Phaser.GameObjects.Container[] = [];
   private motion = true;
+  private pointerStartY = 0;
+  private scrollAtPointer = 0;
+  private moved = false;
 
   constructor(private readonly hooks: MatchHooks) {
     super({ key: 'map' });
@@ -26,8 +31,10 @@ export class MapScene extends Phaser.Scene {
 
   create(): void {
     this.motion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.cameras.main.disableCull = true;
     this.backdrop = this.add.graphics().setDepth(0);
     this.path = this.add.graphics().setDepth(1);
+    this.bindScrolling();
     this.scale.on('resize', this.redraw);
     this.events.on(Phaser.Scenes.Events.WAKE, this.onWake);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -50,7 +57,12 @@ export class MapScene extends Phaser.Scene {
       return;
     }
 
-    this.scene.launch('match', { levelNumber });
+    const match = this.scene.get('match');
+    if (match.scene.isActive()) {
+      match.scene.restart({ levelNumber });
+    } else {
+      this.scene.launch('match', { levelNumber });
+    }
     if (this.scene.isActive()) {
       this.scene.sleep();
     }
@@ -67,9 +79,11 @@ export class MapScene extends Phaser.Scene {
       return;
     }
 
-    this.paintBackdrop(width, height);
-    const points = PATH_LEVELS.map((_, index) => this.nodePoint(index, width, height));
-    const pathHalf = Math.min(40, Math.max(26, width * 0.07));
+    const layout = this.trailLayout(width, height);
+    this.cameras.main.setBounds(0, 0, width, layout.worldHeight);
+    this.paintBackdrop(width, layout.worldHeight);
+    const points = layout.points;
+    const pathHalf = layout.pathHalf;
     this.paintPath(points, pathHalf);
     this.destroyNodes();
     const progress = loadProgress();
@@ -118,21 +132,81 @@ export class MapScene extends Phaser.Scene {
       if (container.input) {
         container.input.cursor = locked ? 'default' : 'pointer';
       }
-      container.on('pointerdown', () => this.startLevel(level.number));
+      container.on('pointerup', () => {
+        if (this.moved) {
+          return;
+        }
+        this.startLevel(level.number);
+      });
       this.nodes.push(container);
     });
+
+    this.cameras.main.scrollY = this.scrollForLevel(ready, points, layout.worldHeight, height);
   };
 
-  private nodePoint(index: number, width: number, height: number): { x: number; y: number } {
+  private trailLayout(
+    width: number,
+    viewHeight: number,
+  ): { worldHeight: number; pathHalf: number; points: { x: number; y: number }[] } {
     const count = PATH_LEVELS.length;
     const pathHalf = Math.min(40, Math.max(26, width * 0.07));
-    const top = pathHalf + 34;
-    const bottom = height - (pathHalf + 56);
-    const t = count === 1 ? 0.5 : index / (count - 1);
-    const y = bottom - t * (bottom - top);
+    const topPad = pathHalf + 40;
+    const bottomPad = pathHalf + 72;
+    const worldHeight = Math.max(viewHeight, topPad + bottomPad + Math.max(0, count - 1) * LEVEL_SPACING);
+    const bottom = worldHeight - bottomPad;
     const amplitude = Math.min(118, width * 0.3);
-    const x = width / 2 + Math.sin(t * Math.PI * 2) * amplitude;
-    return { x, y };
+    const points = PATH_LEVELS.map((_, index) => ({
+      x: width / 2 + Math.sin(index * 0.95) * amplitude,
+      y: bottom - index * LEVEL_SPACING,
+    }));
+    return { worldHeight, pathHalf, points };
+  }
+
+  private scrollForLevel(
+    levelNumber: number,
+    points: readonly { y: number }[],
+    worldHeight: number,
+    viewHeight: number,
+  ): number {
+    const index = Math.max(
+      0,
+      PATH_LEVELS.findIndex((level) => level.number === levelNumber),
+    );
+    const point = points[index];
+    const maxScroll = Math.max(0, worldHeight - viewHeight);
+    if (!point) {
+      return maxScroll;
+    }
+    return Phaser.Math.Clamp(point.y - viewHeight * 0.45, 0, maxScroll);
+  }
+
+  private bindScrolling(): void {
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      this.pointerStartY = pointer.y;
+      this.scrollAtPointer = this.cameras.main.scrollY;
+      this.moved = false;
+    });
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (!pointer.isDown) {
+        return;
+      }
+      const delta = pointer.y - this.pointerStartY;
+      if (Math.abs(delta) <= 10) {
+        return;
+      }
+      this.moved = true;
+      const camera = this.cameras.main;
+      const maxScroll = Math.max(0, camera.getBounds().height - camera.height);
+      camera.scrollY = Phaser.Math.Clamp(this.scrollAtPointer - delta, 0, maxScroll);
+    });
+    this.input.on(
+      'wheel',
+      (_pointer: Phaser.Input.Pointer, _over: Phaser.GameObjects.GameObject[], _dx: number, dy: number) => {
+        const camera = this.cameras.main;
+        const maxScroll = Math.max(0, camera.getBounds().height - camera.height);
+        camera.scrollY = Phaser.Math.Clamp(camera.scrollY + dy, 0, maxScroll);
+      },
+    );
   }
 
   private paintBackdrop(width: number, height: number): void {
@@ -143,13 +217,18 @@ export class MapScene extends Phaser.Scene {
     graphics.clear();
     graphics.fillStyle(0x62b347, 1);
     graphics.fillRect(0, 0, width, height);
-    graphics.fillStyle(0x4f9a38, 0.45);
-    graphics.fillCircle(width * 0.12, height * 0.18, width * 0.22);
-    graphics.fillCircle(width * 0.9, height * 0.72, width * 0.2);
-    graphics.fillStyle(0x8ed46a, 0.35);
-    graphics.fillCircle(width * 0.2, height * 0.78, width * 0.16);
-    graphics.fillCircle(width * 0.82, height * 0.16, width * 0.14);
-    for (let patch = 0; patch < 16; patch += 1) {
+    const bands = Math.max(1, Math.ceil(height / 520));
+    for (let band = 0; band < bands; band += 1) {
+      const origin = band * 520;
+      graphics.fillStyle(0x4f9a38, 0.45);
+      graphics.fillCircle(width * 0.12, origin + 90, width * 0.22);
+      graphics.fillCircle(width * 0.9, origin + 360, width * 0.2);
+      graphics.fillStyle(0x8ed46a, 0.35);
+      graphics.fillCircle(width * 0.2, origin + 400, width * 0.16);
+      graphics.fillCircle(width * 0.82, origin + 80, width * 0.14);
+    }
+    const patches = Math.max(16, Math.round(height / 36));
+    for (let patch = 0; patch < patches; patch += 1) {
       const x = (((patch * 173 + 40) % 1000) / 1000) * width;
       const y = (((patch * 97 + 25) % 1000) / 1000) * height;
       graphics.fillStyle(patch % 2 === 0 ? 0x7dce5b : 0x4c9636, 0.28);
@@ -171,12 +250,11 @@ export class MapScene extends Phaser.Scene {
     this.fillRibbon(graphics, samples, pathHalf * 0.78, 0x8d5a32, 1, 0, 0, 1.4);
     this.fillRibbon(graphics, samples, pathHalf * 0.34, 0xd7b07a, 1, 0, 0, 0.6);
     this.paintSoil(graphics, samples, pathHalf);
-    this.paintGrassEdge(graphics, samples, pathHalf);
     this.paintMeadow(graphics, samples, pathHalf);
   }
 
   private trailSamples(points: { x: number; y: number }[]): TrailSample[] {
-    const steps = 88;
+    const steps = Math.max(140, points.length * 28);
     const raw = Array.from({ length: steps + 1 }, (_, step) => this.pointAlong(points, step / steps));
     return raw.map((point, index) => {
       const previous = raw[Math.max(0, index - 1)] ?? point;
@@ -246,27 +324,11 @@ export class MapScene extends Phaser.Scene {
     });
   }
 
-  private paintGrassEdge(graphics: Phaser.GameObjects.Graphics, samples: TrailSample[], pathHalf: number): void {
-    samples.forEach((sample, index) => {
-      if (index % 2 !== 0) {
-        return;
-      }
-      for (const side of [-1, 1]) {
-        const baseX = sample.x + sample.nx * side * (pathHalf + 2);
-        const baseY = sample.y + sample.ny * side * (pathHalf + 2);
-        const lean = Math.atan2(sample.ny * side - 1.15, sample.nx * side);
-        const length = 16 + (index % 5) * 2;
-        this.drawBlade(graphics, baseX, baseY, lean - 0.42, length, 0x2e7d32);
-        this.drawBlade(graphics, baseX, baseY, lean, length + 7, index % 4 === 0 ? 0x1b5e20 : 0x43a047);
-        this.drawBlade(graphics, baseX, baseY, lean + 0.42, length - 2, 0x7cb342);
-      }
-    });
-  }
-
   private paintMeadow(graphics: Phaser.GameObjects.Graphics, samples: TrailSample[], pathHalf: number): void {
     const width = this.scale.width;
-    const height = this.scale.height;
-    for (let spot = 0; spot < 18; spot += 1) {
+    const height = this.cameras.main.getBounds().height || this.scale.height;
+    const spots = Math.max(18, Math.round(height / 28));
+    for (let spot = 0; spot < spots; spot += 1) {
       const x = (((spot * 211 + 60) % 1000) / 1000) * width;
       const y = (((spot * 149 + 30) % 1000) / 1000) * height;
       if (this.nearTrail(samples, x, y, pathHalf + 36)) {
@@ -374,7 +436,7 @@ export class MapScene extends Phaser.Scene {
     return this.add
       .text(0, locked ? -size * 0.16 : 1, String(levelNumber), {
         fontFamily: FONT,
-        fontSize: `${Math.round(size * 0.9)}px`,
+        fontSize: `${Math.round(size * (String(levelNumber).length > 1 ? 0.72 : 0.9))}px`,
         color: locked ? '#455a64' : '#ffffff',
         fontStyle: 'bold',
       })

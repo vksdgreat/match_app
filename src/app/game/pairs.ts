@@ -36,7 +36,14 @@ export type PictureKind =
   | 'lemonJuice'
   | 'ball'
   | 'mango'
-  | 'pencil';
+  | 'pencil'
+  | 'star'
+  | 'boat'
+  | 'flagIndia'
+  | 'flagJapan'
+  | 'flagFrance'
+  | 'flagBrazil'
+  | 'flagCanada';
 export type ShapeKind = 'circle' | 'triangle' | 'square' | 'diamond' | 'star' | 'pentagon' | 'hexagon' | 'octagon';
 export type LeftStyle = 'circle' | 'word' | 'picture' | 'square' | 'number';
 export type RightStyle = 'picture' | 'shape';
@@ -61,6 +68,9 @@ export interface LevelDef {
   rightHeading: string;
   leftStyle: LeftStyle;
   rightStyle: RightStyle;
+  plainWords?: boolean;
+  hideRightLabel?: boolean;
+  colorHint?: boolean;
   startHint: string;
   tapHint: string;
   missHint: string;
@@ -153,7 +163,6 @@ export const LEVEL_SEVEN: readonly MatchPair[] = [
     id: 'apple-juice',
     color: 0xe53935,
     colorName: 'Apple juice',
-    leftName: 'Apple juice',
     leftPicture: 'appleJuice',
     rightName: 'Apple',
     picture: 'apple',
@@ -162,7 +171,6 @@ export const LEVEL_SEVEN: readonly MatchPair[] = [
     id: 'orange-juice',
     color: 0xfb8c00,
     colorName: 'Orange juice',
-    leftName: 'Orange juice',
     leftPicture: 'orangeJuice',
     rightName: 'Orange',
     picture: 'orange',
@@ -171,7 +179,6 @@ export const LEVEL_SEVEN: readonly MatchPair[] = [
     id: 'grape-juice',
     color: 0x8e24aa,
     colorName: 'Grape juice',
-    leftName: 'Grape juice',
     leftPicture: 'grapeJuice',
     rightName: 'Grapes',
     picture: 'grapes',
@@ -180,7 +187,6 @@ export const LEVEL_SEVEN: readonly MatchPair[] = [
     id: 'strawberry-juice',
     color: 0xec407a,
     colorName: 'Strawberry juice',
-    leftName: 'Strawberry juice',
     leftPicture: 'strawberryJuice',
     rightName: 'Strawberry',
     picture: 'strawberry',
@@ -189,7 +195,6 @@ export const LEVEL_SEVEN: readonly MatchPair[] = [
     id: 'lemon-juice',
     color: 0xfbc02d,
     colorName: 'Lemon juice',
-    leftName: 'Lemon juice',
     leftPicture: 'lemonJuice',
     rightName: 'Lemon',
     picture: 'lemon',
@@ -202,7 +207,7 @@ export const LEVEL_EIGHT: readonly MatchPair[] = [
     color: 0xe53935,
     colorName: 'One',
     leftName: '1',
-    rightName: '1 apple',
+    rightName: 'Apple',
     picture: 'apple',
     quantity: 1,
   },
@@ -211,7 +216,7 @@ export const LEVEL_EIGHT: readonly MatchPair[] = [
     color: 0x1e88e5,
     colorName: 'Two',
     leftName: '2',
-    rightName: '2 pencils',
+    rightName: 'Pencils',
     picture: 'pencil',
     quantity: 2,
   },
@@ -220,7 +225,7 @@ export const LEVEL_EIGHT: readonly MatchPair[] = [
     color: 0x43a047,
     colorName: 'Three',
     leftName: '3',
-    rightName: '3 mangoes',
+    rightName: 'Mangoes',
     picture: 'mango',
     quantity: 3,
   },
@@ -229,7 +234,7 @@ export const LEVEL_EIGHT: readonly MatchPair[] = [
     color: 0xfb8c00,
     colorName: 'Four',
     leftName: '4',
-    rightName: '4 flowers',
+    rightName: 'Flowers',
     picture: 'flower',
     quantity: 4,
   },
@@ -238,7 +243,7 @@ export const LEVEL_EIGHT: readonly MatchPair[] = [
     color: 0x8e24aa,
     colorName: 'Five',
     leftName: '5',
-    rightName: '5 balls',
+    rightName: 'Balls',
     picture: 'ball',
     quantity: 5,
   },
@@ -250,6 +255,126 @@ export const LEVEL_NINE: readonly MatchPair[] = [
   { id: 'five', color: 0x43a047, colorName: 'Five', leftName: '5', rightName: 'Pentagon', shape: 'pentagon' },
   { id: 'six', color: 0xfb8c00, colorName: 'Six', leftName: '6', rightName: 'Hexagon', shape: 'hexagon' },
   { id: 'eight', color: 0x8e24aa, colorName: 'Eight', leftName: '8', rightName: 'Octagon', shape: 'octagon' },
+];
+
+export const LEVEL_TEN: readonly MatchPair[] = [
+  { id: 'word-apple', color: 0xe53935, colorName: 'Apple', rightName: 'Apple', picture: 'apple' },
+  { id: 'word-mango', color: 0xef6c00, colorName: 'Mango', rightName: 'Mango', picture: 'mango' },
+  { id: 'word-grapes', color: 0x8e24aa, colorName: 'Grapes', rightName: 'Grapes', picture: 'grapes' },
+  { id: 'word-lemon', color: 0xf9a825, colorName: 'Lemon', rightName: 'Lemon', picture: 'lemon' },
+  { id: 'word-orange', color: 0xfb8c00, colorName: 'Orange', rightName: 'Orange', picture: 'orange' },
+];
+
+export const LEVEL_ELEVEN: readonly MatchPair[] = [
+  { id: 'read-apple', color: 0xe53935, colorName: 'Apple', rightName: 'apple', picture: 'apple' },
+  { id: 'read-mango', color: 0xef6c00, colorName: 'Mango', rightName: 'mango', picture: 'mango' },
+  { id: 'read-grapes', color: 0x8e24aa, colorName: 'Grapes', rightName: 'grapes', picture: 'grapes' },
+  { id: 'read-lemon', color: 0xf9a825, colorName: 'Lemon', rightName: 'lemon', picture: 'lemon' },
+  { id: 'read-orange', color: 0xfb8c00, colorName: 'Orange', rightName: 'orange', picture: 'orange' },
+];
+
+export const LEVEL_TWELVE: readonly MatchPair[] = [
+  { id: 'word-bike', color: 0xe53935, colorName: 'Bike', rightName: 'bike', picture: 'bicycle' },
+  { id: 'word-car', color: 0x1e88e5, colorName: 'Car', rightName: 'car', picture: 'car' },
+  { id: 'word-bus', color: 0x43a047, colorName: 'Bus', rightName: 'bus', picture: 'bus' },
+  { id: 'word-plane', color: 0x8e24aa, colorName: 'Plane', rightName: 'plane', picture: 'plane' },
+  { id: 'word-boat', color: 0x00897b, colorName: 'Boat', rightName: 'boat', picture: 'boat' },
+];
+
+export const LEVEL_THIRTEEN: readonly MatchPair[] = [
+  { id: 'stars-6', color: 0xe53935, colorName: 'Six', leftName: '6', rightName: 'Stars', picture: 'star', quantity: 6 },
+  {
+    id: 'stars-7',
+    color: 0x1e88e5,
+    colorName: 'Seven',
+    leftName: '7',
+    rightName: 'Stars',
+    picture: 'star',
+    quantity: 7,
+  },
+  {
+    id: 'stars-8',
+    color: 0x43a047,
+    colorName: 'Eight',
+    leftName: '8',
+    rightName: 'Stars',
+    picture: 'star',
+    quantity: 8,
+  },
+  {
+    id: 'stars-9',
+    color: 0xfb8c00,
+    colorName: 'Nine',
+    leftName: '9',
+    rightName: 'Stars',
+    picture: 'star',
+    quantity: 9,
+  },
+  {
+    id: 'stars-10',
+    color: 0x8e24aa,
+    colorName: 'Ten',
+    leftName: '10',
+    rightName: 'Stars',
+    picture: 'star',
+    quantity: 10,
+  },
+];
+
+export const LEVEL_FOURTEEN: readonly MatchPair[] = [
+  {
+    id: 'sum-3',
+    color: 0xe53935,
+    colorName: 'Three',
+    leftName: '1+2',
+    rightName: 'Balls',
+    picture: 'ball',
+    quantity: 3,
+  },
+  {
+    id: 'sum-4',
+    color: 0x1e88e5,
+    colorName: 'Four',
+    leftName: '2+2',
+    rightName: 'Balls',
+    picture: 'ball',
+    quantity: 4,
+  },
+  {
+    id: 'sum-5',
+    color: 0x43a047,
+    colorName: 'Five',
+    leftName: '3+2',
+    rightName: 'Balls',
+    picture: 'ball',
+    quantity: 5,
+  },
+  {
+    id: 'sum-7',
+    color: 0xfb8c00,
+    colorName: 'Seven',
+    leftName: '4+3',
+    rightName: 'Balls',
+    picture: 'ball',
+    quantity: 7,
+  },
+  {
+    id: 'sum-9',
+    color: 0x8e24aa,
+    colorName: 'Nine',
+    leftName: '5+4',
+    rightName: 'Balls',
+    picture: 'ball',
+    quantity: 9,
+  },
+];
+
+export const LEVEL_FIFTEEN: readonly MatchPair[] = [
+  { id: 'india', color: 0xff9933, colorName: 'India', rightName: 'India flag', picture: 'flagIndia' },
+  { id: 'japan', color: 0xd32f2f, colorName: 'Japan', rightName: 'Japan flag', picture: 'flagJapan' },
+  { id: 'france', color: 0x1565c0, colorName: 'France', rightName: 'France flag', picture: 'flagFrance' },
+  { id: 'brazil', color: 0x2e7d32, colorName: 'Brazil', rightName: 'Brazil flag', picture: 'flagBrazil' },
+  { id: 'canada', color: 0xc62828, colorName: 'Canada', rightName: 'Canada flag', picture: 'flagCanada' },
 ];
 
 export const LEVEL_TWO: readonly MatchPair[] = [
@@ -338,15 +463,15 @@ const LEVEL_SIX_DEF: LevelDef = {
 const LEVEL_SEVEN_DEF: LevelDef = {
   number: 7,
   built: true,
-  hint: 'Match each glass of juice to the fruit it comes from.',
+  hint: 'Match each juice to the fruit of the same color.',
   leftHeading: 'Juices',
   rightHeading: 'Fruits',
   leftStyle: 'picture',
   rightStyle: 'picture',
   startHint: 'Start from a glass of juice.',
-  tapHint: 'Now tap the fruit that makes this juice.',
-  missHint: 'Not a match. Look for the fruit this juice comes from.',
-  glowHint: 'See the glowing fruit? It makes this juice.',
+  tapHint: 'Now tap the fruit with the same color.',
+  missHint: 'Not a match. Look for the fruit in this color.',
+  glowHint: 'See the glowing fruit? It matches this juice color.',
   pairs: LEVEL_SEVEN,
 };
 
@@ -380,6 +505,108 @@ const LEVEL_NINE_DEF: LevelDef = {
   pairs: LEVEL_NINE,
 };
 
+const LEVEL_TEN_DEF: LevelDef = {
+  number: 10,
+  built: true,
+  hint: 'Match each colored fruit word to the fruit of that color.',
+  leftHeading: 'Fruit words',
+  rightHeading: 'Fruits',
+  leftStyle: 'word',
+  rightStyle: 'picture',
+  hideRightLabel: true,
+  startHint: 'Start from a fruit word.',
+  tapHint: 'Now tap the fruit of this color.',
+  missHint: 'Not a match. Look for the fruit of this color.',
+  glowHint: 'See the glowing fruit? It matches this word.',
+  pairs: LEVEL_TEN,
+};
+
+const LEVEL_ELEVEN_DEF: LevelDef = {
+  number: 11,
+  built: true,
+  hint: 'Read each fruit word and match it to the fruit.',
+  leftHeading: 'Fruit words',
+  rightHeading: 'Fruits',
+  leftStyle: 'word',
+  rightStyle: 'picture',
+  plainWords: true,
+  hideRightLabel: true,
+  colorHint: false,
+  startHint: 'Start from a fruit word.',
+  tapHint: 'Now tap the fruit this word names.',
+  missHint: 'Not a match. Read the word again.',
+  glowHint: 'See the glowing fruit? It matches this word.',
+  pairs: LEVEL_ELEVEN,
+};
+
+const LEVEL_TWELVE_DEF: LevelDef = {
+  number: 12,
+  built: true,
+  hint: 'Read each vehicle word and match it to the vehicle.',
+  leftHeading: 'Vehicle words',
+  rightHeading: 'Vehicles',
+  leftStyle: 'word',
+  rightStyle: 'picture',
+  plainWords: true,
+  hideRightLabel: true,
+  colorHint: false,
+  startHint: 'Start from a vehicle word.',
+  tapHint: 'Now tap the vehicle this word names.',
+  missHint: 'Not a match. Read the word again.',
+  glowHint: 'See the glowing vehicle? It matches this word.',
+  pairs: LEVEL_TWELVE,
+};
+
+const LEVEL_THIRTEEN_DEF: LevelDef = {
+  number: 13,
+  built: true,
+  hint: 'Match each number to the group with that many stars.',
+  leftHeading: 'Numbers',
+  rightHeading: 'Stars',
+  leftStyle: 'number',
+  rightStyle: 'picture',
+  colorHint: false,
+  startHint: 'Start from a number.',
+  tapHint: 'Now tap the group with that many stars.',
+  missHint: 'Not a match. Count the stars carefully.',
+  glowHint: 'See the glowing group? Count its stars.',
+  pairs: LEVEL_THIRTEEN,
+};
+
+const LEVEL_FOURTEEN_DEF: LevelDef = {
+  number: 14,
+  built: true,
+  hint: 'Match each sum to the group with that many balls.',
+  leftHeading: 'Sums',
+  rightHeading: 'Balls',
+  leftStyle: 'number',
+  rightStyle: 'picture',
+  colorHint: false,
+  startHint: 'Start from a sum.',
+  tapHint: 'Now tap the group with that many balls.',
+  missHint: 'Not a match. Add the numbers, then count the balls.',
+  glowHint: 'See the glowing group? Count its balls.',
+  pairs: LEVEL_FOURTEEN,
+};
+
+const LEVEL_FIFTEEN_DEF: LevelDef = {
+  number: 15,
+  built: true,
+  hint: 'Match each country name to its flag.',
+  leftHeading: 'Countries',
+  rightHeading: 'Flags',
+  leftStyle: 'word',
+  rightStyle: 'picture',
+  plainWords: true,
+  hideRightLabel: true,
+  colorHint: false,
+  startHint: 'Start from a country name.',
+  tapHint: 'Now tap the flag of that country.',
+  missHint: 'Not a match. Look for that country’s flag.',
+  glowHint: 'See the glowing flag? It belongs to this country.',
+  pairs: LEVEL_FIFTEEN,
+};
+
 const LEVEL_TWO_DEF: LevelDef = {
   number: 2,
   built: true,
@@ -405,6 +632,12 @@ export const PATH_LEVELS: readonly LevelDef[] = [
   LEVEL_SEVEN_DEF,
   LEVEL_EIGHT_DEF,
   LEVEL_NINE_DEF,
+  LEVEL_TEN_DEF,
+  LEVEL_ELEVEN_DEF,
+  LEVEL_TWELVE_DEF,
+  LEVEL_THIRTEEN_DEF,
+  LEVEL_FOURTEEN_DEF,
+  LEVEL_FIFTEEN_DEF,
 ];
 
 export const BUILT_LEVEL_COUNT = PATH_LEVELS.filter((level) => level.built).length;

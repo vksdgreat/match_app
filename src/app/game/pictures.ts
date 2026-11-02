@@ -4,9 +4,10 @@ import { paintAnimalFamilies } from './animal-families';
 import { paintAnimals } from './animals';
 import { paintBirds } from './birds';
 import { paintCountedItems } from './counted-items';
+import { paintFlags } from './flags';
 import { paintJuices } from './juices';
 import { LEVEL_ONE, LEVEL_SEVEN, type PictureKind } from './pairs';
-import { paintVehicles } from './vehicles';
+import { paintBoat, paintVehicles } from './vehicles';
 
 const SIZE = 256;
 
@@ -51,6 +52,14 @@ export function createPictureTextures(scene: Phaser.Scene): void {
 
   if (!scene.textures.exists(textureKey('ball'))) {
     paintCountedItems((picture, paint) => drawTexture(scene, picture, paint));
+  }
+
+  if (!scene.textures.exists(textureKey('boat'))) {
+    paintBoat((picture, paint) => drawTexture(scene, picture, paint));
+  }
+
+  if (!scene.textures.exists(textureKey('flagIndia'))) {
+    paintFlags((picture, paint) => drawTexture(scene, picture, paint));
   }
 }
 
