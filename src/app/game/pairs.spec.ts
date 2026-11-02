@@ -2,6 +2,7 @@ import {
   LEVEL_EIGHT,
   LEVEL_FIVE,
   LEVEL_FOUR,
+  LEVEL_NINE,
   LEVEL_ONE,
   LEVEL_SEVEN,
   LEVEL_SIX,
@@ -108,6 +109,14 @@ describe('match pairs', () => {
     expect(new Set(LEVEL_EIGHT.map((pair) => pair.color)).size).toBe(LEVEL_EIGHT.length);
     expect(new Set(LEVEL_EIGHT.map((pair) => pair.picture)).size).toBe(LEVEL_EIGHT.length);
     expect(new Set(LEVEL_EIGHT.map((pair) => pair.id)).size).toBe(LEVEL_EIGHT.length);
+  });
+
+  it('gives level 9 a colored number and the polygon with that many sides', () => {
+    expect(LEVEL_NINE.map((pair) => pair.leftName)).toEqual(['3', '4', '5', '6', '8']);
+    expect(LEVEL_NINE.map((pair) => pair.shape)).toEqual(['triangle', 'square', 'pentagon', 'hexagon', 'octagon']);
+    expect(LEVEL_NINE.map((pair) => pair.rightName)).toEqual(['Triangle', 'Square', 'Pentagon', 'Hexagon', 'Octagon']);
+    expect(new Set(LEVEL_NINE.map((pair) => pair.color)).size).toBe(LEVEL_NINE.length);
+    expect(LEVEL_NINE.every((pair) => pair.leftName !== undefined && pair.shape !== undefined)).toBe(true);
   });
 
   it('deals both sides in different orders', () => {

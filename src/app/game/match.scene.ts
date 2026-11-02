@@ -294,7 +294,7 @@ export class MatchScene extends Phaser.Scene {
       this.hooks.onFeedback({
         tone: 'good',
         text:
-          this.level.leftStyle === 'number'
+          this.level.leftStyle === 'number' && left.pair.quantity !== undefined
             ? `Great counting! ${right.pair.rightName}!`
             : `${left.pair.leftName ?? left.pair.colorName} matches the ${left.pair.rightName.toLowerCase()}!`,
       });
@@ -429,13 +429,15 @@ export class MatchScene extends Phaser.Scene {
 
   private drawShape(node: MatchNode, cardSize: number): Phaser.GameObjects.Graphics {
     const graphics = this.add.graphics();
-    const radius = cardSize * 0.3;
+    const shape = node.pair.shape ?? 'circle';
+    const countingSides = this.level.leftStyle === 'number';
+    const radius = countingSides ? cardSize * 0.38 : cardSize * 0.3;
     const color = node.pair.color;
     graphics.fillStyle(color, 1);
-    this.traceShape(graphics, node.pair.shape ?? 'circle', radius);
+    this.traceShape(graphics, shape, radius);
     graphics.fillPath();
-    graphics.lineStyle(4, 0x000000, 0.18);
-    this.traceShape(graphics, node.pair.shape ?? 'circle', radius);
+    graphics.lineStyle(4, countingSides ? 0x4e342e : 0x000000, countingSides ? 0.55 : 0.18);
+    this.traceShape(graphics, shape, radius);
     graphics.strokePath();
     return graphics;
   }
@@ -473,12 +475,33 @@ export class MatchScene extends Phaser.Scene {
       graphics.closePath();
       return;
     }
+    if (shape === 'pentagon' || shape === 'hexagon' || shape === 'octagon') {
+      const sides = shape === 'pentagon' ? 5 : shape === 'hexagon' ? 6 : 8;
+      this.traceRegularPolygon(graphics, sides, radius + 2);
+      return;
+    }
     graphics.beginPath();
     for (let point = 0; point < 10; point += 1) {
       const distance = point % 2 === 0 ? radius + 6 : radius * 0.48;
       const angle = -Math.PI / 2 + (point * Math.PI) / 5;
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance - 2;
+      if (point === 0) {
+        graphics.moveTo(x, y);
+      } else {
+        graphics.lineTo(x, y);
+      }
+    }
+    graphics.closePath();
+  }
+
+  private traceRegularPolygon(graphics: Phaser.GameObjects.Graphics, sides: number, radius: number): void {
+    const start = sides % 2 === 0 ? -Math.PI / 2 + Math.PI / sides : -Math.PI / 2;
+    graphics.beginPath();
+    for (let point = 0; point < sides; point += 1) {
+      const angle = start + (point * Math.PI * 2) / sides;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius - 2;
       if (point === 0) {
         graphics.moveTo(x, y);
       } else {

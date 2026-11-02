@@ -5,7 +5,7 @@ import { PATH_LEVELS } from './pairs';
 import { isCleared, isUnlocked, loadProgress, lockedReason, readyLevelNumber, describeProgress } from './progress';
 
 const FONT = '"Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif';
-const OPEN_COLORS = [0x42a5f5, 0x7e57c2, 0xec407a, 0xffa726, 0x66bb6a, 0x26c6da, 0x8d6e63, 0x5c6bc0];
+const OPEN_COLORS = [0x42a5f5, 0x7e57c2, 0xec407a, 0xffa726, 0x66bb6a, 0x26c6da, 0x8d6e63, 0x5c6bc0, 0xef5350];
 
 interface TrailSample {
   x: number;
