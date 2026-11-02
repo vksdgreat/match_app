@@ -2,7 +2,7 @@ import type Phaser from 'phaser';
 
 import type { PictureKind } from './pairs';
 
-type CountedPicture = Extract<PictureKind, 'ball' | 'mango' | 'pencil'>;
+type CountedPicture = Extract<PictureKind, 'ball' | 'mango' | 'pencil' | 'star'>;
 
 export function paintCountedItems(
   draw: (picture: CountedPicture, paint: (graphics: Phaser.GameObjects.Graphics) => void) => void,
@@ -10,6 +10,39 @@ export function paintCountedItems(
   draw('ball', drawBall);
   draw('mango', drawMango);
   draw('pencil', drawPencil);
+  draw('star', drawStar);
+}
+
+function drawStar(graphics: Phaser.GameObjects.Graphics): void {
+  fillStar(graphics, 128, 136, 108, 46, 0xf9a825);
+  fillStar(graphics, 128, 128, 96, 40, 0xffe082);
+  graphics.fillStyle(0xffffff, 0.95);
+  graphics.fillCircle(104, 104, 12);
+}
+
+function fillStar(
+  graphics: Phaser.GameObjects.Graphics,
+  x: number,
+  y: number,
+  outer: number,
+  inner: number,
+  color: number,
+): void {
+  graphics.fillStyle(color, 1);
+  graphics.beginPath();
+  for (let point = 0; point < 10; point += 1) {
+    const radius = point % 2 === 0 ? outer : inner;
+    const angle = -Math.PI / 2 + (point * Math.PI) / 5;
+    const px = x + Math.cos(angle) * radius;
+    const py = y + Math.sin(angle) * radius;
+    if (point === 0) {
+      graphics.moveTo(px, py);
+    } else {
+      graphics.lineTo(px, py);
+    }
+  }
+  graphics.closePath();
+  graphics.fillPath();
 }
 
 function drawBall(graphics: Phaser.GameObjects.Graphics): void {

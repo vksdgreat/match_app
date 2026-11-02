@@ -1,12 +1,18 @@
 import {
   LEVEL_EIGHT,
+  LEVEL_ELEVEN,
+  LEVEL_FIFTEEN,
   LEVEL_FIVE,
   LEVEL_FOUR,
+  LEVEL_FOURTEEN,
   LEVEL_NINE,
   LEVEL_ONE,
   LEVEL_SEVEN,
   LEVEL_SIX,
+  LEVEL_TEN,
+  LEVEL_THIRTEEN,
   LEVEL_THREE,
+  LEVEL_TWELVE,
   LEVEL_TWO,
   dealPairs,
   shuffle,
@@ -84,13 +90,7 @@ describe('match pairs', () => {
       'lemonJuice',
     ]);
     expect(LEVEL_SEVEN.map((pair) => pair.picture)).toEqual(['apple', 'orange', 'grapes', 'strawberry', 'lemon']);
-    expect(LEVEL_SEVEN.map((pair) => pair.leftName)).toEqual([
-      'Apple juice',
-      'Orange juice',
-      'Grape juice',
-      'Strawberry juice',
-      'Lemon juice',
-    ]);
+    expect(LEVEL_SEVEN.every((pair) => pair.leftName === undefined)).toBe(true);
     expect(new Set(LEVEL_SEVEN.map((pair) => pair.id)).size).toBe(LEVEL_SEVEN.length);
     expect(new Set(LEVEL_SEVEN.map((pair) => pair.leftPicture)).size).toBe(LEVEL_SEVEN.length);
     expect(new Set(LEVEL_SEVEN.map((pair) => pair.picture)).size).toBe(LEVEL_SEVEN.length);
@@ -99,13 +99,7 @@ describe('match pairs', () => {
   it('gives level 8 colorful numbers and matching counted item groups', () => {
     expect(LEVEL_EIGHT.map((pair) => pair.leftName)).toEqual(['1', '2', '3', '4', '5']);
     expect(LEVEL_EIGHT.map((pair) => pair.quantity)).toEqual([1, 2, 3, 4, 5]);
-    expect(LEVEL_EIGHT.map((pair) => pair.rightName)).toEqual([
-      '1 apple',
-      '2 pencils',
-      '3 mangoes',
-      '4 flowers',
-      '5 balls',
-    ]);
+    expect(LEVEL_EIGHT.map((pair) => pair.rightName)).toEqual(['Apple', 'Pencils', 'Mangoes', 'Flowers', 'Balls']);
     expect(new Set(LEVEL_EIGHT.map((pair) => pair.color)).size).toBe(LEVEL_EIGHT.length);
     expect(new Set(LEVEL_EIGHT.map((pair) => pair.picture)).size).toBe(LEVEL_EIGHT.length);
     expect(new Set(LEVEL_EIGHT.map((pair) => pair.id)).size).toBe(LEVEL_EIGHT.length);
@@ -117,6 +111,40 @@ describe('match pairs', () => {
     expect(LEVEL_NINE.map((pair) => pair.rightName)).toEqual(['Triangle', 'Square', 'Pentagon', 'Hexagon', 'Octagon']);
     expect(new Set(LEVEL_NINE.map((pair) => pair.color)).size).toBe(LEVEL_NINE.length);
     expect(LEVEL_NINE.every((pair) => pair.leftName !== undefined && pair.shape !== undefined)).toBe(true);
+  });
+
+  it('gives level 10 colored fruit words and hides the fruit names', () => {
+    expect(LEVEL_TEN.map((pair) => pair.colorName)).toEqual(['Apple', 'Mango', 'Grapes', 'Lemon', 'Orange']);
+    expect(LEVEL_TEN.map((pair) => pair.picture)).toEqual(['apple', 'mango', 'grapes', 'lemon', 'orange']);
+    expect(new Set(LEVEL_TEN.map((pair) => pair.color)).size).toBe(LEVEL_TEN.length);
+  });
+
+  it('gives level 11 plain fruit words and level 12 plain vehicle words', () => {
+    expect(LEVEL_ELEVEN.map((pair) => pair.colorName)).toEqual(['Apple', 'Mango', 'Grapes', 'Lemon', 'Orange']);
+    expect(LEVEL_ELEVEN.map((pair) => pair.picture)).toEqual(['apple', 'mango', 'grapes', 'lemon', 'orange']);
+    expect(LEVEL_TWELVE.map((pair) => pair.colorName)).toEqual(['Bike', 'Car', 'Bus', 'Plane', 'Boat']);
+    expect(LEVEL_TWELVE.map((pair) => pair.picture)).toEqual(['bicycle', 'car', 'bus', 'plane', 'boat']);
+  });
+
+  it('gives level 13 larger star groups and level 14 sums within ten', () => {
+    expect(LEVEL_THIRTEEN.map((pair) => pair.leftName)).toEqual(['6', '7', '8', '9', '10']);
+    expect(LEVEL_THIRTEEN.map((pair) => pair.quantity)).toEqual([6, 7, 8, 9, 10]);
+    expect(LEVEL_THIRTEEN.every((pair) => pair.picture === 'star' && pair.rightName === 'Stars')).toBe(true);
+    expect(LEVEL_FOURTEEN.map((pair) => pair.leftName)).toEqual(['1+2', '2+2', '3+2', '4+3', '5+4']);
+    expect(LEVEL_FOURTEEN.map((pair) => pair.quantity)).toEqual([3, 4, 5, 7, 9]);
+    expect(LEVEL_FOURTEEN.every((pair) => pair.picture === 'ball' && (pair.quantity ?? 0) <= 10)).toBe(true);
+  });
+
+  it('gives level 15 country names and distinct flags', () => {
+    expect(LEVEL_FIFTEEN.map((pair) => pair.colorName)).toEqual(['India', 'Japan', 'France', 'Brazil', 'Canada']);
+    expect(LEVEL_FIFTEEN.map((pair) => pair.picture)).toEqual([
+      'flagIndia',
+      'flagJapan',
+      'flagFrance',
+      'flagBrazil',
+      'flagCanada',
+    ]);
+    expect(new Set(LEVEL_FIFTEEN.map((pair) => pair.picture)).size).toBe(LEVEL_FIFTEEN.length);
   });
 
   it('deals both sides in different orders', () => {

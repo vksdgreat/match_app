@@ -9,6 +9,10 @@ const TIRE = 0x37474f;
 const METAL = 0xb0bec5;
 const GLASS = 0xb3e5fc;
 
+export function paintBoat(draw: (picture: 'boat', paint: (graphics: Graphics) => void) => void): void {
+  draw('boat', drawBoat);
+}
+
 export function paintVehicles(draw: (picture: VehiclePicture, paint: (graphics: Graphics) => void) => void): void {
   for (const pair of LEVEL_SIX) {
     const picture = pair.picture;
@@ -179,6 +183,33 @@ function wheel(graphics: Graphics, x: number, y: number, radius: number): void {
   circle(graphics, x, y, radius + 5, TIRE);
   circle(graphics, x, y, radius * 0.58, METAL);
   circle(graphics, x, y, radius * 0.24, 0x546e7a);
+}
+
+function drawBoat(graphics: Graphics): void {
+  shadow(graphics);
+  line(graphics, 128, 78, 128, 168, 0x6d4c41, 8);
+  polygon(
+    graphics,
+    [
+      [128, 74],
+      [188, 150],
+      [128, 132],
+    ],
+    0xfff8e1,
+  );
+  polygon(
+    graphics,
+    [
+      [46, 168],
+      [210, 168],
+      [186, 206],
+      [70, 206],
+    ],
+    0x0277bd,
+  );
+  roundedBox(graphics, 108, 146, 40, 28, 0xe65100, 6);
+  circle(graphics, 122, 160, 4, 0xfff59d);
+  ellipse(graphics, 128, 214, 150, 16, 0x4fc3f7, 0.85);
 }
 
 function shadow(graphics: Graphics): void {

@@ -1,8 +1,10 @@
 import type { AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { Component, ViewChild, signal } from '@angular/core';
-import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular';
+import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonTitle, IonToolbar } from '@ionic/angular';
+import { home } from 'ionicons/icons';
 
 import type { FeedbackTone, MapInfo, MatchFeedback, MatchProgress, PlayInfo } from '../game/match.types';
+import { levelByNumber } from '../game/pairs';
 import { describeProgress, loadProgress } from '../game/progress';
 import { formatElapsedTime, starsForElapsedTime } from '../game/timing';
 
@@ -20,7 +22,7 @@ const initialProgress = describeProgress(loadProgress());
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar],
+  imports: [IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonTitle, IonToolbar],
 })
 export class HomePage implements AfterViewInit, OnDestroy {
   @ViewChild('gameHost')
@@ -43,6 +45,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   readonly starIndexes = [0, 1, 2];
   readonly supported = signal(true);
   readonly booted = signal(false);
+  readonly homeIcon = home;
 
   private handle?: RunningGame;
   private resizeObserver?: ResizeObserver;
@@ -74,6 +77,20 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.feedback.set('');
     this.startTimer();
     this.handle?.replay();
+  }
+
+  hasNextLevel(): boolean {
+    return Boolean(levelByNumber(this.levelNumber() + 1)?.built);
+  }
+
+  playNext(): void {
+    const next = this.levelNumber() + 1;
+    if (!this.hasNextLevel()) {
+      return;
+    }
+    this.complete.set(false);
+    this.feedback.set('');
+    this.handle?.startLevel(next);
   }
 
   backToPath(): void {

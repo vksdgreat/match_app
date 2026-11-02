@@ -293,10 +293,7 @@ export class MatchScene extends Phaser.Scene {
     if (!complete) {
       this.hooks.onFeedback({
         tone: 'good',
-        text:
-          this.level.leftStyle === 'number' && left.pair.quantity !== undefined
-            ? `Great counting! ${right.pair.rightName}!`
-            : `${left.pair.leftName ?? left.pair.colorName} matches the ${left.pair.rightName.toLowerCase()}!`,
+        text: this.successText(left, right),
       });
     }
   }
@@ -330,9 +327,9 @@ export class MatchScene extends Phaser.Scene {
       node.halfWidth = metrics.cardSize / 2 + NUB_OFFSET;
       container.add(this.drawCard(node, metrics));
       container.add(this.makePicture(node, metrics.cardSize, node.pair.leftPicture ?? 'apple'));
-      container.add(
-        this.makeLabel(node.pair.leftName ?? node.pair.colorName, metrics.cardSize / 2 + LABEL_GAP, metrics.labelSize),
-      );
+      if (node.pair.leftName) {
+        container.add(this.makeLabel(node.pair.leftName, metrics.cardSize / 2 + LABEL_GAP, metrics.labelSize));
+      }
     } else if (node.side === 'left') {
       node.radius = metrics.circleRadius;
       node.halfWidth = metrics.circleRadius + NUB_OFFSET;
@@ -349,7 +346,9 @@ export class MatchScene extends Phaser.Scene {
       } else {
         container.add(this.makePicture(node, metrics.cardSize));
       }
-      container.add(this.makeLabel(node.pair.rightName, metrics.cardSize / 2 + LABEL_GAP, metrics.labelSize));
+      if (!this.level.hideRightLabel && node.pair.rightName) {
+        container.add(this.makeLabel(node.pair.rightName, metrics.cardSize / 2 + LABEL_GAP, metrics.labelSize));
+      }
     }
 
     if (node.matched) {
@@ -370,11 +369,13 @@ export class MatchScene extends Phaser.Scene {
   private paintNumber(container: Phaser.GameObjects.Container, node: MatchNode, metrics: BoardMetrics): void {
     node.radius = metrics.circleRadius;
     node.halfWidth = metrics.circleRadius + NUB_OFFSET;
+    const label = node.pair.leftName ?? String(node.pair.quantity);
+    const fontScale = label.length > 2 ? 1.05 : 1.65;
     container.add(
       this.add
-        .text(0, -2, node.pair.leftName ?? String(node.pair.quantity), {
+        .text(0, -2, label, {
           fontFamily: FONT,
-          fontSize: `${Math.round(metrics.circleRadius * 1.65)}px`,
+          fontSize: `${Math.round(metrics.circleRadius * fontScale)}px`,
           color: hexColor(node.pair.color),
           fontStyle: 'bold',
           stroke: '#ffffff',
@@ -386,45 +387,66 @@ export class MatchScene extends Phaser.Scene {
   }
 
   private paintWord(container: Phaser.GameObjects.Container, node: MatchNode, metrics: BoardMetrics): void {
-    const plateWidth = metrics.circleRadius * 2.35;
+    const letters = node.pair.colorName.length;
+    const plateWidth = metrics.circleRadius * (letters > 5 ? 3.05 : letters > 4 ? 2.7 : 2.35);
     const plateHeight = metrics.circleRadius * 1.7;
     node.radius = plateHeight / 2;
     node.halfWidth = plateWidth / 2 + NUB_OFFSET;
-    container.add(this.drawWordPlate(node, plateWidth, plateHeight));
-    container.add(this.makeColoredWord(node.pair, plateWidth));
+    const ink = this.wordInk(node.pair);
+    container.add(this.drawWordPlate(plateWidth, plateHeight, ink));
+    container.add(this.makeColoredWord(node.pair, plateWidth, ink));
   }
 
-  private drawWordPlate(node: MatchNode, width: number, height: number): Phaser.GameObjects.Graphics {
+  private drawWordPlate(width: number, height: number, ink: number): Phaser.GameObjects.Graphics {
     const graphics = this.add.graphics();
     const left = -width / 2;
     const top = -height / 2;
     const corner = Math.min(16, height * 0.35);
     graphics.fillStyle(0xffffff, 1);
     graphics.fillRoundedRect(left, top, width, height, corner);
-    graphics.lineStyle(5, node.pair.color, 1);
+    graphics.lineStyle(5, ink, 1);
     graphics.strokeRoundedRect(left, top, width, height, corner);
-    graphics.fillStyle(node.pair.color, 1);
+    graphics.fillStyle(ink, 1);
     graphics.fillCircle(width / 2 + NUB_OFFSET, 0, 8);
     graphics.lineStyle(3, 0xffffff, 1);
     graphics.strokeCircle(width / 2 + NUB_OFFSET, 0, 8);
     return graphics;
   }
 
-  private makeColoredWord(pair: MatchPair, plateWidth: number): Phaser.GameObjects.Text {
+  private makeColoredWord(pair: MatchPair, plateWidth: number, ink: number): Phaser.GameObjects.Text {
     const word = pair.colorName.toUpperCase();
     let fontSize = 28;
     const maxWidth = plateWidth - 14;
-    while (word.length * fontSize * 0.62 > maxWidth && fontSize > 13) {
+    while (word.length * fontSize * 0.86 > maxWidth && fontSize > 11) {
       fontSize -= 1;
     }
+    const plain = ink === 0x4e342e;
     return this.add
       .text(0, 0, word, {
         fontFamily: FONT,
         fontSize: `${fontSize}px`,
-        color: hexColor(pair.color),
+        color: hexColor(ink),
         fontStyle: 'bold',
+        stroke: plain ? undefined : '#4e342e',
+        strokeThickness: plain ? 0 : 4,
       })
       .setOrigin(0.5);
+  }
+
+  private wordInk(pair: MatchPair): number {
+    return this.level.plainWords ? 0x4e342e : pair.color;
+  }
+
+  private borderColor(node: MatchNode): number {
+    return this.level.colorHint === false ? 0x8d6e63 : node.pair.color;
+  }
+
+  private successText(left: MatchNode, right: MatchNode): string {
+    if (this.level.leftStyle === 'number' && left.pair.quantity !== undefined) {
+      return `Great counting! ${left.pair.quantity} ${right.pair.rightName.toLowerCase()}!`;
+    }
+    const rightLabel = this.level.plainWords ? right.pair.rightName : right.pair.rightName.toLowerCase();
+    return `${left.pair.leftName ?? left.pair.colorName} matches the ${rightLabel}!`;
   }
 
   private drawShape(node: MatchNode, cardSize: number): Phaser.GameObjects.Graphics {
@@ -553,9 +575,10 @@ export class MatchScene extends Phaser.Scene {
     graphics.fillRoundedRect(-half + 3, -half + 5, size, size, corner);
     graphics.fillStyle(0xffffff, 1);
     graphics.fillRoundedRect(-half, -half, size, size, corner);
-    graphics.lineStyle(5, node.pair.color, 1);
+    const border = this.borderColor(node);
+    graphics.lineStyle(5, border, 1);
     graphics.strokeRoundedRect(-half, -half, size, size, corner);
-    graphics.fillStyle(node.pair.color, 1);
+    graphics.fillStyle(border, 1);
     graphics.fillCircle(-half - NUB_OFFSET, 0, 8);
     graphics.lineStyle(3, 0xffffff, 1);
     graphics.strokeCircle(-half - NUB_OFFSET, 0, 8);
@@ -580,9 +603,9 @@ export class MatchScene extends Phaser.Scene {
       return [];
     }
 
-    const columns = quantity === 1 ? 1 : quantity === 2 ? 2 : 3;
+    const columns = quantity <= 1 ? 1 : quantity === 2 ? 2 : quantity <= 6 ? 3 : 4;
     const rows = Math.ceil(quantity / columns);
-    const itemSize = metrics.cardSize / (columns === 1 ? 1.45 : columns === 2 ? 2.2 : 3.2);
+    const itemSize = metrics.cardSize / (columns === 1 ? 1.45 : columns === 2 ? 2.2 : columns === 3 ? 3.2 : 4.15);
     const gap = itemSize * 0.08;
 
     return Array.from({ length: quantity }, (_, index) => {
